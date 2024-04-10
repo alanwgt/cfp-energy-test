@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install dependencies
+        run: npm install commitlint@latest
+
+      - name: Commitlint
+        run: npx commitlint --last --verbose
+
+#      - name: Build
+#        run: npm run build
+#
+#      - name: Test
+#        run: npm test
+#
+  laravel-test-and-lint:
+    runs-on: ubuntu-latest
+    env:
+      extensions: mbstring, tokenizer, xml, json, bcmath, ctype, fileinfo, curl, pdo
+      php-version: 8.3
+      APP_ENV: testing
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup extensions cache
+        id: extcache
+        uses: shivammathur/cache-extensions@v1
+        with:
+          php-version: ${{ env.php-version }}
+          extensions: ${{ env.extensions }}
+          key: "${{ runner.os }}-php-${{ env.php-version }}-extensions-${{ env.extensions }}"
+
+      - name: Cache extensions
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.extcache.outputs.dir }}
+          key: ${{ steps.extcache.outputs.key }}
+          restore-keys: ${{ steps.extcache.outputs.key }}
+
+      - name: Setup PHP with PECL extension
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, tokenizer, xml, json, bcmath, ctype, fileinfo, curl, pdo
+          coverage: none # Disable Xdebug
+
+      - name: Setup composer cache
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: "${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}"
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Dependencies
+        run: composer install --quiet --no-ansi --no-interaction --no-progress --prefer-dist
+
+      - name: Generate environment file
+        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+
+      - name: Set Laravel application key
+        run: php artisan key:generate
+
+      - name: Laravel Pint
+        run: composer run lint
+
+      - name: Laravel Test
+        run: composer run test
