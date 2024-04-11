@@ -9,8 +9,6 @@ services:
       dockerfile: ./docker/laravel/Dockerfile
     volumes:
       - .:/app
-    env_file:
-      - .env
     depends_on:
       - db
 
@@ -36,10 +34,12 @@ services:
 
   vite:
     image: node:18-alpine
+    ports:
+      - "5173:5173"
     volumes:
       - .:/app
     working_dir: /app
-    command: npm i --ignore-scripts && npm --ignore-scripts run dev
+    entrypoint: /bin/sh -c "npm --ignore-scripts install && npm --ignore-scripts run dev"
 
 volumes:
   postgres_data: # volume for persisting postgres data
