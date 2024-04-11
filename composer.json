@@ -12,10 +12,13 @@
         "laravel/tinker": "^2.8"
     },
     "require-dev": {
+        "barryvdh/laravel-ide-helper": "^3.0",
+        "brianium/paratest": "^7.4",
         "fakerphp/faker": "^1.9.1",
         "laravel/pint": "^1.15",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^7.0",
+        "phpstan/phpstan": "^1.10",
         "phpunit/phpunit": "^10.1",
         "spatie/laravel-ignition": "^2.0"
     },
@@ -46,10 +49,13 @@
             "@php artisan key:generate --ansi"
         ],
         "lint": [
-            "pint ."
+            "pint . --test"
         ],
         "test": [
-            "phpunit"
+            "@php artisan test --parallel --colors=always --stop-on-failure"
+        ],
+        "php-stan": [
+            "phpstan analyse -c phpstan.neon"
         ]
     },
     "extra": {

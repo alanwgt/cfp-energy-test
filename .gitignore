@@ -164,4 +164,4 @@ auth.json
 /.fleet
 /.idea
 /.vscode
-
+/_ide_helper.php

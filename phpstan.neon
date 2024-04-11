@@ -1,0 +1,8 @@
+parameters:
+	level: 9
+	paths:
+		- app
+		- tests
+	ignoreErrors:
+	    - '#Method App\\Http\\Middleware\\RedirectIfAuthenticated::handle\(\) should return Symfony\\Component\\HttpFoundation\\Response but returns Illuminate\\Http\\RedirectResponse|Illuminate\\Routing\\Redirector.#'
+	    - '#PHPDoc tag @mixin contains unknown class \w+#'

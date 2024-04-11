@@ -82,8 +82,11 @@ jobs:
       - name: Set Laravel application key
         run: php artisan key:generate
 
-      - name: Laravel Pint
+      - name: Linting
         run: composer run lint
 
-      - name: Laravel Test
+      - name: Tests
         run: composer run test
+
+      - name: Static analysis
+        run: composer run php-stan -- --error-format=github
