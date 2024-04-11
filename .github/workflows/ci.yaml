@@ -23,12 +23,26 @@ jobs:
       - name: Commitlint
         run: npx commitlint --last --verbose
 
-#      - name: Build
-#        run: npm run build
-#
-#      - name: Test
-#        run: npm test
-#
+  node-test-and-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install dependencies
+        run: npm ci # cleans the cache and install
+
+      - name: Check code style
+        run: npm run check-code-style
+
+      - name: Run tests
+        run: npm run test
+
   laravel-test-and-lint:
     runs-on: ubuntu-latest
     env:

@@ -1,0 +1,5 @@
+/.github
+/composer.*
+/docker-compose.yaml
+/package-lock.json
+/README.md

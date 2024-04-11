@@ -1,3 +1,4 @@
 composer test && \
 composer lint && \
-composer php-stan
+composer php-stan && \
+npm run check-code-style
