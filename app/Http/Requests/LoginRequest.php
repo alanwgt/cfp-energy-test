@@ -26,12 +26,12 @@ class LoginRequest extends FormRequest
         return $this->validated('email');
     }
 
-    public function getOtp(): string
+    public function getOtp(): ?string
     {
         return $this->validated('otp');
     }
 
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return $this->validated('password');
     }

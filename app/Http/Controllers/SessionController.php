@@ -2,32 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\Http\UnauthorizedException;
 use App\Http\Requests\LoginRequest;
 use App\Http\Resources\PreludeResource;
+use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 
 class SessionController extends Controller
 {
-    public function store(LoginRequest $request): JsonResponse
+    public function store(LoginRequest $request, AuthService $authService): JsonResponse
     {
-        $credentials = $request->validated();
+        $authService->login($request->getEmail(), $request->getPassword(), $request->getOtp());
 
-        if ($request->hasOtp()) {
-            // TODO:
-            throw new \RuntimeException('Not implemented');
-        } elseif (auth()->attempt($credentials)) {
-            return response()->ok(PreludeResource::make([]));
-        }
-
-        throw new UnauthorizedException();
+        return response()->ok(PreludeResource::make([]));
     }
 
-    public function destroy(): Response
+    public function destroy(AuthService $authService): Response
     {
-        auth('web')->logout();
+        $authService->logout();
 
         return response()->noContent();
     }
