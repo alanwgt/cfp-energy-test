@@ -96,15 +96,7 @@ class AuthTest extends TestCase
 
     public function test_user_can_register_with_password_and_be_automatically_signed_in_as_normal_user(): void
     {
-        $this->postJson(route('auth.store'), [
-            'email' => fake()->email,
-            'password' => fake()->password(8),
-            'first_name' => fake()->firstName,
-            'last_name' => fake()->lastName,
-            'phone_number' => fake()->phoneNumber,
-            'date_of_birth' => fake()->date,
-            'username' => fake()->userName,
-        ])->assertSuccessful();
+        $this->postJson(route('auth.store'), $this->generateUserData())->assertSuccessful();
 
         $this->assertAuthenticated();
     }

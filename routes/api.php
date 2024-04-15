@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SessionController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,4 +36,9 @@ Route::name('auth.')
                 Route::post('/authentication-method', [AuthController::class, 'authenticationMethod'])
                     ->name('authentication-method');
             });
+    });
+
+Route::middleware('auth:sanctum')
+    ->group(function () {
+        Route::apiResource('users', UserController::class);
     });

@@ -31,7 +31,7 @@ class StoreUserData extends Data
     {
         return [
             'email' => 'required|email|unique:users,email',
-            'password' => ['sometimes', Password::defaults()],
+            'password' => ['sometimes', 'nullable', Password::defaults()],
             'first_name' => 'required|string|min:3',
             'last_name' => 'required|string|min:3',
             'phone_number' => 'required|string',

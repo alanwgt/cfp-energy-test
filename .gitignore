@@ -165,3 +165,6 @@ auth.json
 /.idea
 /.vscode
 /_ide_helper.php
+/.phpactor.json
+/*.md
+/!README.md

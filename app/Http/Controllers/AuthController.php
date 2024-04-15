@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Data\StoreUserData;
 use App\Http\Requests\GetAuthenticationMethodRequest;
 use App\Services\AuthService;
+use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 
@@ -17,10 +18,10 @@ class AuthController extends Controller
         ]);
     }
 
-    public function store(StoreUserData $request, AuthService $authService): JsonResponse
+    public function store(StoreUserData $request, UserService $userService, AuthService $authService): JsonResponse
     {
-        $user = $authService->register($request);
-        auth()->login($user);
+        $user = $userService->upsert($request);
+        $authService->loginUser($user);
 
         return response()->ok([
             'ok' => true,
