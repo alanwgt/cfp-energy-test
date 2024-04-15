@@ -1,6 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SessionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +15,24 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::name('auth.')
+    ->prefix('auth')
+    ->group(function () {
+        Route::middleware('auth:sanctum')
+            ->group(function () {
+                Route::delete('/session', [SessionController::class, 'destroy'])
+                    ->name('session.destroy');
+            });
+
+        Route::middleware('throttle:auth')
+            ->group(function () {
+                Route::post('/', [AuthController::class, 'store'])
+                    ->name('store');
+
+                Route::post('/session', [SessionController::class, 'store'])
+                    ->name('session.store');
+
+                Route::post('/authentication-method', [AuthController::class, 'authenticationMethod'])
+                    ->name('authentication-method');
+            });
+    });

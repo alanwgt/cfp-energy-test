@@ -1,9 +1,10 @@
 version: '3.8'
 
-name: cpf-energy-test
+name: cfp-energy-test
 
 services:
   laravel:
+    container_name: cfp-energy-laravel
     build:
       context: .
       dockerfile: ./docker/laravel/Dockerfile
@@ -13,6 +14,7 @@ services:
       - db
 
   db:
+    container_name: cfp-energy-db
     image: postgres:16-alpine
     environment:
       POSTGRES_USER: ${DB_USERNAME}
@@ -22,6 +24,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   proxy:
+    container_name: cfp-energy-proxy
     image: nginx:alpine
     ports:
       - "80:80"
@@ -33,6 +36,7 @@ services:
       - laravel
 
   vite:
+    container_name: cfp-energy-vite
     image: node:18-alpine
     ports:
       - "5173:5173"

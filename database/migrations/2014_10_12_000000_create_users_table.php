@@ -1,5 +1,7 @@
 <?php
 
+use App\Enum\AuthenticationMethod;
+use App\Enum\Role;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,13 +15,24 @@ return new class() extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->string('username')->unique();
+            $table->string('phone_number')->unique();
+            $table->date('date_of_birth');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
+            $table->enum('role', Role::values());
+            $table->enum('authentication_method', AuthenticationMethod::values());
             $table->rememberToken();
             $table->timestamps();
         });
+
+        if (app()->isProduction()) {
+            // authentication_method of type password should have a password
+            \DB::statement('ALTER TABLE users ADD CONSTRAINT password_required CHECK (authentication_method != \'password\' OR password IS NOT NULL)');
+        }
     }
 
     /**
