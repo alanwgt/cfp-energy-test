@@ -90,15 +90,6 @@ jobs:
       - name: Install Dependencies
         run: composer install --quiet --no-ansi --no-interaction --no-progress --prefer-dist --optimize-autoloader
 
-      - name: Generate environment file
-        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
-
-      - name: Set Laravel application key
-        run: php artisan key:generate
-
-      - name: Optimize Laravel
-        run: php artisan optimize
-
       - name: Linting
         run: composer run lint
 
