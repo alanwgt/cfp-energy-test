@@ -3,10 +3,13 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class AuthTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_user_can_login(): void
     {
         $email = fake()->email;
@@ -75,9 +78,7 @@ class AuthTest extends TestCase
 
     public function test_user_can_check_authentication_method_for_non_existent_user(): void
     {
-        $email = fake()->email;
-
-        $this->postJson(route('auth.authentication-method', ['email' => $email]))
+        $this->postJson(route('auth.authentication-method', ['email' => fake()->email]))
             ->assertJson([
                 'authentication_method' => 'password',
             ]);

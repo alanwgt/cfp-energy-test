@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use App\Http\Resources\ErrorResource;
 use App\Support\CFPException;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
@@ -48,6 +49,8 @@ class Handler extends ExceptionHandler
             $status = $e->getStatusCode();
         } elseif ($e instanceof AuthenticationException) {
             $status = Response::HTTP_UNAUTHORIZED;
+        } elseif ($e instanceof AuthorizationException) {
+            $status = Response::HTTP_FORBIDDEN;
         } elseif ($e instanceof ValidationException) {
             $status = Response::HTTP_BAD_REQUEST;
         }

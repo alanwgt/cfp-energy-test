@@ -5,14 +5,12 @@ namespace Tests;
 use App\Enum\Role;
 use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable as UserContract;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Laravel\Sanctum\Sanctum;
 
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
-    use RefreshDatabase;
 
     /**
      * @param  string[]  $abilites
@@ -41,7 +39,7 @@ abstract class TestCase extends BaseTestCase
         ];
     }
 
-    protected function actingAsUser(Role $role = Role::USER): UserContract
+    protected function actingAsUser(Role $role = Role::USER): User
     {
         $user = User::factory()->role($role)->create();
         $this->actingAs($user);

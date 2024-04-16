@@ -6,12 +6,20 @@ use App\Data\StoreUserData;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\UserService;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 
 class UserController extends Controller
 {
+    use AuthorizesRequests;
+
+    public function __construct()
+    {
+        $this->authorizeResource(User::class);
+    }
+
     public function index(): JsonResponse
     {
         return response()->ok(UserResource::collection(User::get()));

@@ -1,13 +1,16 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\UserCRUD;
 
 use App\Enum\Role;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ActingAsAdminTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -32,14 +35,14 @@ class ActingAsAdminTest extends TestCase
 
     public function test_can_delete_user(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->role(Role::MANAGER)->create();
         $this->deleteJson(route('users.destroy', $user))->assertSuccessful();
         $this->assertDatabaseMissing('users', ['id' => $user->id]);
     }
 
     public function test_can_update_user(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->role(Role::MANAGER)->create();
         $userData = $this->generateUserData();
         $this->patchJson(route('users.update', $user), $userData)->assertSuccessful();
         unset($userData['password']);
@@ -57,5 +60,14 @@ class ActingAsAdminTest extends TestCase
             'id' => $response->json('data.id'),
             'authentication_method' => 'otp',
         ]);
+    }
+
+    public function test_cannot_update_another_admin(): void
+    {
+        $user = User::factory()->role(Role::ADMIN)->create();
+        $userData = $this->generateUserData();
+        $this->patchJson(route('users.update', $user), $userData)->assertForbidden();
+        unset($userData['password']);
+        $this->assertDatabaseMissing('users', $userData);
     }
 }
