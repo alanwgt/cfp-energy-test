@@ -9,6 +9,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { SnackbarProvider } from 'notistack';
 
 import AuthLock from './components/auth/AuthLock.jsx';
+import { Kernel } from './components/layout/Kernel.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
 import materialTheme from './lib/materialTheme.js';
 import Routes from './routes/index.jsx';
@@ -21,7 +22,9 @@ export default function App() {
                 <SnackbarProvider />
                 <AuthProvider>
                     <AuthLock>
-                        <Routes />
+                        <Kernel>
+                            <Routes />
+                        </Kernel>
                     </AuthLock>
                 </AuthProvider>
             </ThemeProvider>

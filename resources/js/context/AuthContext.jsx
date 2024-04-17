@@ -27,7 +27,6 @@ export const AuthProvider = ({ children }) => {
         axios.interceptors.response.use(
             response => response,
             error => {
-                console.log(error);
                 let errMsg = error.response?.data.message || error.message;
                 if (error.response?.status === 401) {
                     setIsAuthenticated(false);
