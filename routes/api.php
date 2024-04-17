@@ -21,6 +21,9 @@ Route::name('auth.')
     ->group(function () {
         Route::middleware('auth:sanctum')
             ->group(function () {
+                Route::get('/session', [SessionController::class, 'index'])
+                    ->name('session.index');
+
                 Route::delete('/session', [SessionController::class, 'destroy'])
                     ->name('session.destroy');
             });

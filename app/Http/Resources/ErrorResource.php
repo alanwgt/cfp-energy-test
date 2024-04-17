@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 /**
@@ -26,24 +27,16 @@ class ErrorResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        if (app()->isLocal()) {
-            return [
-                'message' => $this->resource->getMessage(),
-                'exception' => get_class($this->resource),
-                'file' => $this->resource->getFile(),
-                'line' => $this->resource->getLine(),
-                'trace' => $this->resource->getTrace(),
-            ];
-        }
-
         if ($this->resource instanceof QueryException) {
-            return [
-                'message' => 'Database error',
-            ];
+            $message = 'Database error';
+        } elseif ($this->resource instanceof ValidationException) {
+            $message = $this->resource->errors();
+        } else {
+            $message = $this->resource->getMessage();
         }
 
         return [
-            'message' => $this->resource->getMessage(),
+            'message' => $message,
         ];
     }
 }

@@ -15,7 +15,7 @@ class SessionController extends Controller
     {
         $authService->login($request->getEmail(), $request->getPassword(), $request->getOtp());
 
-        return response()->ok(PreludeResource::make([]));
+        return response()->ok(PreludeResource::make(auth()->user()));
     }
 
     public function destroy(AuthService $authService): Response
@@ -23,5 +23,10 @@ class SessionController extends Controller
         $authService->logout();
 
         return response()->noContent();
+    }
+
+    public function index(): JsonResponse
+    {
+        return response()->ok(PreludeResource::make(auth()->user()));
     }
 }
