@@ -16,6 +16,8 @@ services:
   db:
     container_name: cfp-energy-db
     image: postgres:16-alpine
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -32,6 +34,7 @@ services:
     volumes:
       - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./docker/nginx/sites-enabled:/etc/nginx/sites-enabled
+      - ./public:/app/public
     depends_on:
       - laravel
 
