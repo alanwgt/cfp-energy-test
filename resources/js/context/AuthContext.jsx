@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }) => {
                 // check if user is authenticated
                 checkAuth()
                     .then(({ data }) => {
-                        setUser(data);
+                        setUser(data.data);
                         setIsAuthenticated(true);
                     })
                     .catch(() => {
@@ -66,7 +66,7 @@ export const AuthProvider = ({ children }) => {
 
     const loginWithPassword = (email, password, rememberMe) =>
         authLoginWithPassword(email, password, rememberMe).then(({ data }) => {
-            setUser(data);
+            setUser(data.data);
             setIsAuthenticated(true);
         });
     const logout = async () => {};
@@ -88,7 +88,7 @@ export const AuthProvider = ({ children }) => {
             phoneNumber,
             dateOfBirth
         ).then(({ data }) => {
-            setUser(data);
+            setUser(data.data);
             setIsAuthenticated(true);
         });
     };

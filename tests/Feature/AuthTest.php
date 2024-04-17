@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Resources\PreludeResource;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -23,7 +24,7 @@ class AuthTest extends TestCase
         $this->postJson(route('auth.session.store'), [
             'email' => $email,
             'password' => $password,
-        ])->assertSuccessful();
+        ])->assertSuccessful()->assertJson(['data' => PreludeResource::make($user)->jsonSerialize()]);
 
         $this->assertAuthenticatedAs($user);
     }

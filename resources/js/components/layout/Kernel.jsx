@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import MenuIcon from '@mui/icons-material/Menu';
 import {
     AppBar,
@@ -13,12 +15,44 @@ import {
 } from '@mui/material';
 import Button from '@mui/material/Button';
 
+import { useAuth } from '../../context/AuthContext.jsx';
+
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
+function stringToColor(string) {
+    let hash = 0;
+    let i;
+
+    /* eslint-disable no-bitwise */
+    for (i = 0; i < string.length; i += 1) {
+        hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    let color = '#';
+
+    for (i = 0; i < 3; i += 1) {
+        const value = (hash >> (i * 8)) & 0xff;
+        color += `00${value.toString(16)}`.slice(-2);
+    }
+    /* eslint-enable no-bitwise */
+
+    return color;
+}
+
+function stringAvatar(name) {
+    return {
+        sx: {
+            bgcolor: stringToColor(name),
+        },
+        children: `${name.split(' ')[0][0].toUpperCase()}${name.split(' ')[1][0].toUpperCase()}`,
+    };
+}
+
 export function Kernel({ children }) {
-    const [anchorElNav, setAnchorElNav] = React.useState(null);
-    const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const { user } = useAuth();
+    const [anchorElNav, setAnchorElNav] = useState(null);
+    const [anchorElUser, setAnchorElUser] = useState(null);
 
     const handleOpenNavMenu = event => {
         setAnchorElNav(event.currentTarget);
@@ -166,8 +200,8 @@ export function Kernel({ children }) {
                                     sx={{ p: 0 }}
                                 >
                                     <Avatar
-                                        alt='Remy Sharp'
-                                        src='/static/images/avatar/2.jpg'
+                                        alt={user.firstName}
+                                        {...stringAvatar(user.full_name)}
                                     />
                                 </IconButton>
                             </Tooltip>
