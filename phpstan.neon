@@ -7,3 +7,4 @@ parameters:
         - app
         - tests
     ignoreErrors:
+    checkGenericClassInNonGenericObjectType: false

@@ -7,14 +7,14 @@ import { useAuth } from '../../context/AuthContext.jsx';
 import LoadingButton from '../inputs/LoadingButton.jsx';
 
 const initialState = {
-    email: '',
+    identification: '',
     password: '',
     rememberMe: false,
 };
 
 const loginSchema = Yup.object().shape({
-    email: Yup.string().email().required(),
-    password: Yup.string().required(),
+    identification: Yup.string().min(3).required(),
+    password: Yup.string().min(8).required(),
     rememberMe: Yup.boolean(),
 });
 
@@ -23,8 +23,11 @@ export default function Login() {
     const formik = useFormik({
         initialValues: initialState,
         validationSchema: loginSchema,
-        onSubmit: ({ email, password, rememberMe }, { setSubmitting }) => {
-            login(email, password, rememberMe).finally(() =>
+        onSubmit: (
+            { identification, password, rememberMe },
+            { setSubmitting }
+        ) => {
+            login(identification, password, rememberMe).finally(() =>
                 setSubmitting(false)
             );
         },
@@ -36,14 +39,20 @@ export default function Login() {
                 <TextField
                     required
                     fullWidth
-                    label='Email Address'
-                    name='email'
-                    autoComplete='email'
-                    value={formik.values.email}
+                    label='Email Address/Username'
+                    name='identification'
+                    autoComplete='username'
+                    value={formik.values.identification}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    error={formik.touched.email && Boolean(formik.errors.email)}
-                    helperText={formik.touched.email && formik.errors.email}
+                    error={
+                        formik.touched.identification &&
+                        Boolean(formik.errors.identification)
+                    }
+                    helperText={
+                        formik.touched.identification &&
+                        formik.errors.identification
+                    }
                 />
                 <TextField
                     required

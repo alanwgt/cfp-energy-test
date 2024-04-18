@@ -5,13 +5,14 @@ namespace App\Services;
 use App\Exceptions\DomainLogicException;
 use App\Exceptions\Http\UnauthorizedException;
 use App\Models\User;
+use App\QueryBuilders\UserQueryBuilder;
 
 class AuthService
 {
-    public function getAuthenticationMethod(string $email): string
+    public function getAuthenticationMethod(string $identification): string
     {
         $user = User::query()
-            ->where('email', $email)
+            ->whereIdentification($identification)
             ->first();
 
         //        if ($user?->usesOtp()) {
@@ -28,14 +29,14 @@ class AuthService
         auth()->login($user);
     }
 
-    public function login(string $email, ?string $password, ?string $otp): void
+    public function login(string $identification, ?string $password, ?string $otp): void
     {
         if (! $password && ! $otp) {
             throw new DomainLogicException('Either password or OTP must be provided');
         }
 
         if ($password) {
-            $this->loginWithPassword($email, $password);
+            $this->loginWithPassword($identification, $password);
 
             return;
         }
@@ -49,10 +50,10 @@ class AuthService
         auth('web')->logout();
     }
 
-    private function loginWithPassword(string $email, string $password): void
+    private function loginWithPassword(string $identification, string $password): void
     {
         if (! auth()->attempt([
-            'email' => $email,
+            'identification' => fn (UserQueryBuilder $query) => $query->whereIdentification($identification),
             'password' => $password,
         ])) {
             throw new UnauthorizedException('Invalid credentials');

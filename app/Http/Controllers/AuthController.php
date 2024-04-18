@@ -22,13 +22,13 @@ class AuthController extends Controller
     public function method(GetAuthenticationMethodRequest $request, AuthService $authService): JsonResponse
     {
         return response()->ok([
-            'authentication_method' => $authService->getAuthenticationMethod($request->getEmail()),
+            'authentication_method' => $authService->getAuthenticationMethod($request->getIdentification()),
         ]);
     }
 
     public function signIn(LoginRequest $request, AuthService $authService): JsonResponse
     {
-        $authService->login($request->getEmail(), $request->getPassword(), $request->getOtp());
+        $authService->login($request->getIdentification(), $request->getPassword(), $request->getOtp());
 
         return response()->ok(PreludeResource::make(auth()->user()));
     }

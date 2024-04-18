@@ -64,11 +64,13 @@ export const AuthProvider = ({ children }) => {
             });
     }, []);
 
-    const loginWithPassword = (email, password, rememberMe) =>
-        authLoginWithPassword(email, password, rememberMe).then(({ data }) => {
-            setUser(data.data);
-            setIsAuthenticated(true);
-        });
+    const loginWithPassword = (identification, password, rememberMe) =>
+        authLoginWithPassword(identification, password, rememberMe).then(
+            ({ data }) => {
+                setUser(data.data);
+                setIsAuthenticated(true);
+            }
+        );
     const logout = async () => {};
     const register = (
         username,

@@ -1,7 +1,11 @@
 import axios from '../lib/axios.js';
 
-export const loginWithPassword = (email, password, rememberMe) =>
-    axios.post('auth/sign-in', { email, password, remember_me: rememberMe });
+export const loginWithPassword = (identification, password, rememberMe) =>
+    axios.post('auth/sign-in', {
+        identification,
+        password,
+        remember_me: rememberMe,
+    });
 
 export const logout = async () => axios.post('auth/sign-out');
 

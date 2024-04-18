@@ -4,9 +4,9 @@ namespace App\Models;
 
 use App\Enum\AuthenticationMethod;
 use App\Enum\Role;
+use App\QueryBuilders\UserQueryBuilder;
 use Database\Factories\UserFactory;
 use Eloquent;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -38,23 +38,24 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @property-read int|null $tokens_count
  *
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
- * @method static Builder|User newModelQuery()
- * @method static Builder|User newQuery()
- * @method static Builder|User query()
- * @method static Builder|User whereAuthenticationMethod($value)
- * @method static Builder|User whereCreatedAt($value)
- * @method static Builder|User whereDateOfBirth($value)
- * @method static Builder|User whereEmail($value)
- * @method static Builder|User whereEmailVerifiedAt($value)
- * @method static Builder|User whereFirstName($value)
- * @method static Builder|User whereId($value)
- * @method static Builder|User whereLastName($value)
- * @method static Builder|User wherePassword($value)
- * @method static Builder|User wherePhoneNumber($value)
- * @method static Builder|User whereRememberToken($value)
- * @method static Builder|User whereRole($value)
- * @method static Builder|User whereUpdatedAt($value)
- * @method static Builder|User whereUsername($value)
+ * @method static UserQueryBuilder|User newModelQuery()
+ * @method static UserQueryBuilder|User newQuery()
+ * @method static UserQueryBuilder|User query()
+ * @method static UserQueryBuilder|User whereAuthenticationMethod($value)
+ * @method static UserQueryBuilder|User whereCreatedAt($value)
+ * @method static UserQueryBuilder|User whereDateOfBirth($value)
+ * @method static UserQueryBuilder|User whereEmail($value)
+ * @method static UserQueryBuilder|User whereEmailVerifiedAt($value)
+ * @method static UserQueryBuilder|User whereFirstName($value)
+ * @method static UserQueryBuilder|User whereId($value)
+ * @method static UserQueryBuilder|User whereIdentification(string $identification)
+ * @method static UserQueryBuilder|User whereLastName($value)
+ * @method static UserQueryBuilder|User wherePassword($value)
+ * @method static UserQueryBuilder|User wherePhoneNumber($value)
+ * @method static UserQueryBuilder|User whereRememberToken($value)
+ * @method static UserQueryBuilder|User whereRole($value)
+ * @method static UserQueryBuilder|User whereUpdatedAt($value)
+ * @method static UserQueryBuilder|User whereUsername($value)
  *
  * @mixin Eloquent
  */
@@ -90,6 +91,11 @@ class User extends Authenticatable
     public static function newFactory(): UserFactory
     {
         return UserFactory::new();
+    }
+
+    public function newEloquentBuilder($query): UserQueryBuilder
+    {
+        return new UserQueryBuilder($query);
     }
 
     public function usesOtp(): bool

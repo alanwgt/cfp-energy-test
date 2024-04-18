@@ -11,7 +11,7 @@ class AuthTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_user_can_sign_in(): void
+    public function test_user_can_sign_in_by_email(): void
     {
         $email = fake()->email;
         $password = fake()->password;
@@ -22,7 +22,25 @@ class AuthTest extends TestCase
         ]);
 
         $this->postJson(route('api.v1.auth.sign-in'), [
-            'email' => $email,
+            'identification' => $email,
+            'password' => $password,
+        ])->assertSuccessful()->assertJson(['data' => PreludeResource::make($user)->jsonSerialize()]);
+
+        $this->assertAuthenticatedAs($user);
+    }
+
+    public function test_user_can_sign_in_by_username(): void
+    {
+        $username = fake()->userName;
+        $password = fake()->password;
+
+        /** @var User $user */
+        $user = User::factory()->password($password)->create([
+            'username' => $username,
+        ]);
+
+        $this->postJson(route('api.v1.auth.sign-in'), [
+            'identification' => $username,
             'password' => $password,
         ])->assertSuccessful()->assertJson(['data' => PreludeResource::make($user)->jsonSerialize()]);
 
@@ -41,7 +59,7 @@ class AuthTest extends TestCase
     public function test_user_cannot_sign_in_with_invalid_credentials(): void
     {
         $this->postJson(route('api.v1.auth.sign-in'), [
-            'email' => 'foo@bar.com',
+            'identification' => 'foo@bar.com',
             'password' => 'password',
         ])->assertUnauthorized();
     }
@@ -74,7 +92,7 @@ class AuthTest extends TestCase
             'authentication_method' => 'password',
         ]);
 
-        $this->postJson(route('api.v1.auth.authentication-method', ['email' => $email]))
+        $this->postJson(route('api.v1.auth.authentication-method', ['identification' => $email]))
             ->assertJson([
                 'authentication_method' => 'password',
             ]);
@@ -82,7 +100,7 @@ class AuthTest extends TestCase
 
     public function test_user_can_check_authentication_method_for_non_existent_user(): void
     {
-        $this->postJson(route('api.v1.auth.authentication-method', ['email' => fake()->email]))
+        $this->postJson(route('api.v1.auth.authentication-method', ['identification' => fake()->email]))
             ->assertJson([
                 'authentication_method' => 'password',
             ]);

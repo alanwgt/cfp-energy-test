@@ -15,15 +15,15 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email',
+            'identification' => 'required|min:3',
             'otp' => 'required_without:password|string',
             'password' => 'required_without:otp|string',
         ];
     }
 
-    public function getEmail(): string
+    public function getIdentification(): string
     {
-        return $this->validated('email');
+        return $this->validated('identification');
     }
 
     public function getOtp(): ?string

@@ -15,12 +15,12 @@ class GetAuthenticationMethodRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email',
+            'identification' => 'required|min:3',
         ];
     }
 
-    public function getEmail(): string
+    public function getIdentification(): string
     {
-        return $this->validated('email');
+        return $this->validated('identification');
     }
 }
