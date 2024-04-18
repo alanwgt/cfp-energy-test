@@ -1,4 +1,4 @@
-# CPF Energy Technical Test
+# CFP Energy Technical Test
 
 This test is designed for Full Stack Developers applying for a position at CFP Energy
 (h=ps://www.cfp.energy).
@@ -12,13 +12,13 @@ project should be hosted on your GitHub account.
 Requirements:
 1. Create a CRUD application to add, retrieve, update, and delete users.
 2. Mandatory fields for user details include:
-   • First Name
-   • Last Name
-   • Email
-   • Mobile
-   • Date of birth
-   • Username
-   • Password
+   [x] First Name
+   [x] Last Name
+   [x] Email
+   [x] Mobile
+   [x] Date of birth
+   [x] Username
+   [x] Password
    Feel free to add additional fields as per your imagination.
 3. Technologies to be used:
    • PHP 8+ (https://www.php.net/releases/8.0/en.php)
@@ -58,3 +58,5 @@ Instruc,ons:
 7. Usage of a container (e.g., Docker) in the development environment.
 8. Regular commits using Conven[onal Commits pa=erns and a well-structured GitHub
    repository showcasing the development process.
+
+https://github.com/iamhosseindhv/notistack

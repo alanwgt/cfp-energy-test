@@ -4,7 +4,7 @@ import {
     loginWithPassword as authLoginWithPassword,
     register as authRegister,
     checkAuth,
-} from '../api/auth.js';
+} from '../api/authApi.js';
 import FullLoader from '../components/dataDisplay/FullLoader.jsx';
 import { INIT_CSRF_URL } from '../constants/index.js';
 import axios from '../lib/axios.js';
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
                 }
 
                 if (
-                    error.response?.config.url !== 'auth/session' ||
+                    error.response?.config.url !== 'auth/check' ||
                     error.response?.config.method !== 'get'
                 ) {
                     toast.error(errMsg);

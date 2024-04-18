@@ -20,14 +20,14 @@ class ActingAsAdminTest extends TestCase
     public function test_can_create_another_user(): void
     {
         $userData = $this->generateUserData();
-        $this->postJson(route('users.store'), $userData)->assertSuccessful();
+        $this->postJson(route('api.v1.users.store'), $userData)->assertSuccessful();
         unset($userData['password']);
         $this->assertDatabaseHas('users', $userData);
     }
 
     public function test_cannot_create_user_with_invalid_data(): void
     {
-        $this->postJson(route('users.store'), [
+        $this->postJson(route('api.v1.users.store'), [
             'email' => 'invalid-email',
             'password' => 'short',
         ])->assertBadRequest();
@@ -36,7 +36,7 @@ class ActingAsAdminTest extends TestCase
     public function test_can_delete_user(): void
     {
         $user = User::factory()->role(Role::MANAGER)->create();
-        $this->deleteJson(route('users.destroy', $user))->assertSuccessful();
+        $this->deleteJson(route('api.v1.users.destroy', $user))->assertSuccessful();
         $this->assertDatabaseMissing('users', ['id' => $user->id]);
     }
 
@@ -44,7 +44,7 @@ class ActingAsAdminTest extends TestCase
     {
         $user = User::factory()->role(Role::MANAGER)->create();
         $userData = $this->generateUserData();
-        $this->patchJson(route('users.update', $user), $userData)->assertSuccessful();
+        $this->patchJson(route('api.v1.users.update', $user), $userData)->assertSuccessful();
         unset($userData['password']);
         $this->assertDatabaseHas('users', $userData);
     }
@@ -53,7 +53,7 @@ class ActingAsAdminTest extends TestCase
     {
         $userData = $this->generateUserData();
         $userData['password'] = null;
-        $response = $this->postJson(route('users.store'), $userData)
+        $response = $this->postJson(route('api.v1.users.store'), $userData)
             ->assertSuccessful();
 
         $this->assertDatabaseHas('users', [
@@ -66,7 +66,7 @@ class ActingAsAdminTest extends TestCase
     {
         $user = User::factory()->role(Role::ADMIN)->create();
         $userData = $this->generateUserData();
-        $this->patchJson(route('users.update', $user), $userData)->assertForbidden();
+        $this->patchJson(route('api.v1.users.update', $user), $userData)->assertForbidden();
         unset($userData['password']);
         $this->assertDatabaseMissing('users', $userData);
     }

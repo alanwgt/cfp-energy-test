@@ -21,7 +21,7 @@ class ActingAsUserTest extends TestCase
     public function test_user_cannot_create_another_user(): void
     {
         $userData = $this->generateUserData();
-        $this->postJson(route('users.store'), $userData)->assertForbidden();
+        $this->postJson(route('api.v1.users.store'), $userData)->assertForbidden();
         unset($userData['password']);
         $this->assertDatabaseMissing('users', $userData);
     }
@@ -29,7 +29,7 @@ class ActingAsUserTest extends TestCase
     public function test_user_can_update_itself(): void
     {
         $userData = $this->generateUserData();
-        $this->patchJson(route('users.update', $this->user), $userData)->assertSuccessful();
+        $this->patchJson(route('api.v1.users.update', $this->user), $userData)->assertSuccessful();
         unset($userData['password']);
         $this->assertDatabaseHas('users', $userData);
     }
@@ -38,19 +38,19 @@ class ActingAsUserTest extends TestCase
     {
         $user = User::factory()->create();
         $userData = $this->generateUserData();
-        $this->patchJson(route('users.update', $user), $userData)->assertForbidden();
+        $this->patchJson(route('api.v1.users.update', $user), $userData)->assertForbidden();
         unset($userData['password']);
         $this->assertDatabaseMissing('users', $userData);
     }
 
     public function test_user_can_delete_itself(): void
     {
-        $this->deleteJson(route('users.destroy', $this->user))->assertSuccessful();
+        $this->deleteJson(route('api.v1.users.destroy', $this->user))->assertSuccessful();
         $this->assertDatabaseMissing('users', ['id' => $this->user?->id]);
     }
 
     public function test_user_can_fetch_itself(): void
     {
-        $this->getJson(route('users.show', $this->user))->assertSuccessful();
+        $this->getJson(route('api.v1.users.show', $this->user))->assertSuccessful();
     }
 }

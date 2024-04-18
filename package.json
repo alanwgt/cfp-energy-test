@@ -1,4 +1,5 @@
 {
+    "name": "cfp-energy",
     "private": true,
     "type": "module",
     "scripts": {

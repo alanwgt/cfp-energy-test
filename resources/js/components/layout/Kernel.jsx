@@ -1,11 +1,13 @@
 import { useState } from 'react';
 
+import { Add } from '@mui/icons-material';
 import MenuIcon from '@mui/icons-material/Menu';
 import {
     AppBar,
     Avatar,
     Box,
     Container,
+    Fab,
     IconButton,
     Menu,
     MenuItem,
@@ -236,7 +238,17 @@ export function Kernel({ children }) {
                     </Toolbar>
                 </Container>
             </AppBar>
-            {children}
+            <Container>{children}</Container>
+            <Fab
+                color='secondary'
+                sx={{
+                    position: 'absolute',
+                    bottom: 16,
+                    right: 16,
+                }}
+            >
+                <Add />
+            </Fab>
         </Box>
     );
 }

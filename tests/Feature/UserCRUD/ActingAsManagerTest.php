@@ -22,7 +22,7 @@ class ActingAsManagerTest extends TestCase
     public function test_can_create_user(): void
     {
         $userData = $this->generateUserData();
-        $this->postJson(route('users.store'), $userData)->assertSuccessful();
+        $this->postJson(route('api.v1.users.store'), $userData)->assertSuccessful();
         unset($userData['password']);
         $this->assertDatabaseHas('users', $userData);
     }
@@ -31,7 +31,7 @@ class ActingAsManagerTest extends TestCase
     {
         $user = User::factory()->role(Role::USER)->create();
         $userData = $this->generateUserData();
-        $this->patchJson(route('users.update', $user), $userData)->assertSuccessful();
+        $this->patchJson(route('api.v1.users.update', $user), $userData)->assertSuccessful();
         unset($userData['password']);
         $this->assertDatabaseHas('users', $userData);
     }
@@ -39,32 +39,32 @@ class ActingAsManagerTest extends TestCase
     public function test_can_delete_user(): void
     {
         $user = User::factory()->role(Role::USER)->create();
-        $this->deleteJson(route('users.destroy', $user))->assertSuccessful();
+        $this->deleteJson(route('api.v1.users.destroy', $user))->assertSuccessful();
         $this->assertDatabaseMissing('users', ['id' => $user->id]);
     }
 
     public function test_can_fetch_user(): void
     {
         $user = User::factory()->role(Role::USER)->create();
-        $this->getJson(route('users.show', $user))->assertSuccessful();
+        $this->getJson(route('api.v1.users.show', $user))->assertSuccessful();
     }
 
     public function test_can_fetch_all_users(): void
     {
-        $this->getJson(route('users.index'))->assertSuccessful();
+        $this->getJson(route('api.v1.users.index'))->assertSuccessful();
     }
 
     public function test_cannot_delete_manager(): void
     {
         $manager = User::factory()->role(Role::MANAGER)->create();
-        $this->deleteJson(route('users.destroy', $manager))->assertForbidden();
+        $this->deleteJson(route('api.v1.users.destroy', $manager))->assertForbidden();
         $this->assertDatabaseHas('users', ['id' => $manager->id]);
     }
 
     public function test_cannot_delete_admin(): void
     {
         $admin = User::factory()->role(Role::ADMIN)->create();
-        $this->deleteJson(route('users.destroy', $admin))->assertForbidden();
+        $this->deleteJson(route('api.v1.users.destroy', $admin))->assertForbidden();
         $this->assertDatabaseHas('users', ['id' => $admin->id]);
     }
 
@@ -72,7 +72,7 @@ class ActingAsManagerTest extends TestCase
     {
         $manager = User::factory()->role(Role::MANAGER)->create();
         $userData = $this->generateUserData();
-        $this->patchJson(route('users.update', $manager), $userData)->assertForbidden();
+        $this->patchJson(route('api.v1.users.update', $manager), $userData)->assertForbidden();
         unset($userData['password']);
         $this->assertDatabaseMissing('users', $userData);
     }
@@ -80,6 +80,6 @@ class ActingAsManagerTest extends TestCase
     public function test_cannot_see_admins(): void
     {
         $admin = User::factory()->role(Role::ADMIN)->create();
-        $this->getJson(route('users.show', $admin))->assertForbidden();
+        $this->getJson(route('api.v1.users.show', $admin))->assertForbidden();
     }
 }

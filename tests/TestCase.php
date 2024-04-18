@@ -30,7 +30,7 @@ abstract class TestCase extends BaseTestCase
     {
         return [
             'email' => fake()->email,
-            'password' => fake()->password(8),
+            'password' => 'password',
             'first_name' => fake()->firstName,
             'last_name' => fake()->lastName,
             'phone_number' => fake()->phoneNumber,
@@ -42,7 +42,7 @@ abstract class TestCase extends BaseTestCase
     protected function actingAsUser(Role $role = Role::USER): User
     {
         $user = User::factory()->role($role)->create();
-        $this->actingAs($user);
+        $this->actingAs($user, 'web');
 
         return $user;
     }
