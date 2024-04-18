@@ -7,7 +7,7 @@ export const loginWithPassword = (identification, password, rememberMe) =>
         remember_me: rememberMe,
     });
 
-export const logout = async () => axios.post('auth/sign-out');
+export const logout = () => axios.post('auth/sign-out');
 
 export const register = (
     username,

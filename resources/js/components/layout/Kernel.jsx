@@ -20,7 +20,6 @@ import Button from '@mui/material/Button';
 import { useAuth } from '../../context/AuthContext.jsx';
 
 const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function stringToColor(string) {
     let hash = 0;
@@ -52,7 +51,7 @@ function stringAvatar(name) {
 }
 
 export function Kernel({ children }) {
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
 
@@ -223,16 +222,16 @@ export function Kernel({ children }) {
                                 open={Boolean(anchorElUser)}
                                 onClose={handleCloseUserMenu}
                             >
-                                {settings.map(setting => (
-                                    <MenuItem
-                                        key={setting}
-                                        onClick={handleCloseUserMenu}
-                                    >
-                                        <Typography textAlign='center'>
-                                            {setting}
-                                        </Typography>
-                                    </MenuItem>
-                                ))}
+                                <MenuItem
+                                    onClick={() => {
+                                        handleCloseUserMenu();
+                                        logout();
+                                    }}
+                                >
+                                    <Typography textAlign='center'>
+                                        Logout
+                                    </Typography>
+                                </MenuItem>
                             </Menu>
                         </Box>
                     </Toolbar>

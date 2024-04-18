@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 
 import {
     loginWithPassword as authLoginWithPassword,
+    logout as authLogout,
     register as authRegister,
     checkAuth,
 } from '../api/authApi.js';
@@ -71,7 +72,17 @@ export const AuthProvider = ({ children }) => {
                 setIsAuthenticated(true);
             }
         );
-    const logout = async () => {};
+    const logout = () => {
+        setIsLoading(true);
+        authLogout()
+            .then(() => {
+                setIsAuthenticated(false);
+                setUser(null);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    };
     const register = (
         username,
         email,
