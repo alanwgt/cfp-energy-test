@@ -1,13 +1,17 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
-import Home from '../pages/Home.jsx';
+import HomePage from '../pages/HomePage.jsx';
+import ListUsersPage from '../pages/ListUsersPage.jsx';
+import ManageUserPage from '../pages/ManageUserPage.jsx';
+import UserProfilePage from '../pages/UserProfilePage.jsx';
 
 export default function AppRoutes() {
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route path='/' element={<Home />} />
-            </Routes>
-        </BrowserRouter>
+        <Routes>
+            <Route path='/' element={<HomePage />} />
+            <Route path='/profile' element={<UserProfilePage />} />
+            <Route path='/users' element={<ListUsersPage />} />
+            <Route path='/users/new' element={<ManageUserPage />} />
+        </Routes>
     );
 }

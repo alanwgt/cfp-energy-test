@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Add } from '@mui/icons-material';
+import { Add, Logout, Person } from '@mui/icons-material';
 import MenuIcon from '@mui/icons-material/Menu';
 import {
     AppBar,
@@ -9,6 +9,8 @@ import {
     Container,
     Fab,
     IconButton,
+    ListItemIcon,
+    ListItemText,
     Menu,
     MenuItem,
     Toolbar,
@@ -16,10 +18,9 @@ import {
     Typography,
 } from '@mui/material';
 import Button from '@mui/material/Button';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../../context/AuthContext.jsx';
-
-const pages = ['Products', 'Pricing', 'Blog'];
 
 function stringToColor(string) {
     let hash = 0;
@@ -50,8 +51,9 @@ function stringAvatar(name) {
     };
 }
 
-export function Kernel({ children }) {
+export function Shell({ children }) {
     const { user, logout } = useAuth();
+    const navigate = useNavigate();
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
 
@@ -94,8 +96,8 @@ export function Kernel({ children }) {
                         <Typography
                             variant='h6'
                             noWrap
-                            component='a'
-                            href='#app-bar-with-responsive-menu'
+                            component={Link}
+                            to='/'
                             sx={{
                                 mr: 2,
                                 display: { xs: 'none', md: 'flex' },
@@ -143,23 +145,19 @@ export function Kernel({ children }) {
                                     display: { xs: 'block', md: 'none' },
                                 }}
                             >
-                                {pages.map(page => (
-                                    <MenuItem
-                                        key={page}
-                                        onClick={handleCloseNavMenu}
-                                    >
-                                        <Typography textAlign='center'>
-                                            {page}
-                                        </Typography>
-                                    </MenuItem>
-                                ))}
+                                <MenuItem onClick={handleCloseNavMenu}>
+                                    <ListItemIcon>
+                                        <Person />
+                                    </ListItemIcon>
+                                    <ListItemText>Users</ListItemText>
+                                </MenuItem>
                             </Menu>
                         </Box>
                         <Typography
                             variant='h5'
                             noWrap
-                            component='a'
-                            href='#app-bar-with-responsive-menu'
+                            component={Link}
+                            to='/'
                             sx={{
                                 mr: 2,
                                 display: { xs: 'flex', md: 'none' },
@@ -179,19 +177,16 @@ export function Kernel({ children }) {
                                 display: { xs: 'none', md: 'flex' },
                             }}
                         >
-                            {pages.map(page => (
-                                <Button
-                                    key={page}
-                                    onClick={handleCloseNavMenu}
-                                    sx={{
-                                        my: 2,
-                                        color: 'white',
-                                        display: 'block',
-                                    }}
-                                >
-                                    {page}
-                                </Button>
-                            ))}
+                            <Button
+                                onClick={handleCloseNavMenu}
+                                sx={{
+                                    my: 2,
+                                    color: 'white',
+                                    display: 'block',
+                                }}
+                            >
+                                Users
+                            </Button>
                         </Box>
 
                         <Box sx={{ flexGrow: 0 }}>
@@ -225,12 +220,24 @@ export function Kernel({ children }) {
                                 <MenuItem
                                     onClick={() => {
                                         handleCloseUserMenu();
+                                        navigate('/profile');
+                                    }}
+                                >
+                                    <ListItemIcon>
+                                        <Person fontSize='small' />
+                                    </ListItemIcon>
+                                    <ListItemText>Profile</ListItemText>
+                                </MenuItem>
+                                <MenuItem
+                                    onClick={() => {
+                                        handleCloseUserMenu();
                                         logout();
                                     }}
                                 >
-                                    <Typography textAlign='center'>
-                                        Logout
-                                    </Typography>
+                                    <ListItemIcon>
+                                        <Logout fontSize='small' />
+                                    </ListItemIcon>
+                                    <ListItemText>Logout</ListItemText>
                                 </MenuItem>
                             </Menu>
                         </Box>
@@ -245,6 +252,7 @@ export function Kernel({ children }) {
                     bottom: 16,
                     right: 16,
                 }}
+                onClick={() => navigate('/users/new')}
             >
                 <Add />
             </Fab>

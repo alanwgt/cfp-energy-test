@@ -28,13 +28,13 @@ const signupSchema = Yup.object().shape({
     dateOfBirth: Yup.date().required().label('Date of Birth'),
 });
 
-export default function CreateUser({ onCreate }) {
+export default function ManageUser({ onSubmit, initialValues = null }) {
     const [showPassword, setShowPassword] = useState(false);
     const formik = useFormik({
-        initialValues: initialState,
+        initialValues: initialValues || initialState,
         validationSchema: signupSchema,
         onSubmit: (values, { setSubmitting }) => {
-            onCreate(values).finally(() => setSubmitting(false));
+            onSubmit(values).finally(() => setSubmitting(false));
         },
     });
 
@@ -186,7 +186,7 @@ export default function CreateUser({ onCreate }) {
                     variant='contained'
                     sx={{ mt: 3, mb: 2 }}
                 >
-                    Sign Up
+                    {initialValues ? 'Save' : 'Sign Up'}
                 </LoadingButton>
             </Stack>
         </form>

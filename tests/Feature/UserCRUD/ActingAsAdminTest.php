@@ -14,7 +14,7 @@ class ActingAsAdminTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->actingAsUser(Role::ADMIN);
+        $this->user = $this->actingAsUser(Role::ADMIN);
     }
 
     public function test_can_create_another_user(): void
@@ -35,18 +35,24 @@ class ActingAsAdminTest extends TestCase
 
     public function test_can_delete_user(): void
     {
+        $user = User::factory()->role(Role::USER)->create();
+        $this->deleteJson(route('api.v1.users.destroy', $user))->assertSuccessful();
+        $this->assertUserMissing($user);
+    }
+
+    public function test_can_delete_manager(): void
+    {
         $user = User::factory()->role(Role::MANAGER)->create();
         $this->deleteJson(route('api.v1.users.destroy', $user))->assertSuccessful();
-        $this->assertDatabaseMissing('users', ['id' => $user->id]);
+        $this->assertUserMissing($user);
     }
 
     public function test_can_update_user(): void
     {
         $user = User::factory()->role(Role::MANAGER)->create();
-        $userData = $this->generateUserData();
+        $userData = $this->generateUserUpdateData($user);
         $this->patchJson(route('api.v1.users.update', $user), $userData)->assertSuccessful();
-        unset($userData['password']);
-        $this->assertDatabaseHas('users', $userData);
+        $this->assertUserHas($user, $userData);
     }
 
     public function test_created_user_without_password_uses_otp(): void
@@ -69,5 +75,28 @@ class ActingAsAdminTest extends TestCase
         $this->patchJson(route('api.v1.users.update', $user), $userData)->assertForbidden();
         unset($userData['password']);
         $this->assertDatabaseMissing('users', $userData);
+    }
+
+    public function test_can_promote_to_admin(): void
+    {
+        $user = User::factory()->role(Role::MANAGER)->create();
+        $userData = $this->generateUserUpdateData($user, Role::ADMIN);
+        $this->patchJson(route('api.v1.users.update', $user), $userData)->assertOk();
+        $this->assertUserHas($user, ['role' => Role::ADMIN]);
+    }
+
+    public function test_cannot_update_own_role(): void
+    {
+        $userData = $this->generateUserUpdateData($this->user, Role::MANAGER);
+        $this->patchJson(route('api.v1.users.update', $this->user), $userData)->assertForbidden();
+        $this->assertUserHas($this->user, ['role' => Role::ADMIN]);
+    }
+
+    public function test_can_demote_manager(): void
+    {
+        $user = User::factory()->role(Role::MANAGER)->create();
+        $userData = $this->generateUserUpdateData($user, Role::USER);
+        $this->patchJson(route('api.v1.users.update', $user), $userData)->assertOk();
+        $this->assertUserHas($user, ['role' => Role::USER]);
     }
 }

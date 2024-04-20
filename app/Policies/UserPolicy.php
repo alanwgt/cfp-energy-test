@@ -73,6 +73,10 @@ class UserPolicy
             return Response::allow();
         }
 
+        if ($user->is($model)) {
+            return Response::deny('You cannot change your own role');
+        }
+
         if ($user->role->isGreaterThan($model->role)) {
             return Response::allow();
         }

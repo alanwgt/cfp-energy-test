@@ -8,3 +8,5 @@ parameters:
         - tests
     ignoreErrors:
     checkGenericClassInNonGenericObjectType: false
+    excludePaths:
+        - tests/*

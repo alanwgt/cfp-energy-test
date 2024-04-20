@@ -1,15 +1,15 @@
 import Box from '@mui/material/Box';
 
 import { useAuth } from '../../context/AuthContext.jsx';
-import CreateUser from '../user/CreateUser.jsx';
+import ManageUser from '../user/ManageUser.jsx';
 
 export default function Signup() {
     const { register } = useAuth();
 
     return (
         <Box sx={{ mt: 1 }}>
-            <CreateUser
-                onCreate={values =>
+            <ManageUser
+                onSubmit={values =>
                     register(
                         values.username,
                         values.email,
