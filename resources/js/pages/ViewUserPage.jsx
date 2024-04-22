@@ -10,14 +10,10 @@ import { QUERY_KEYS } from '../utils/queryKeys.js';
 
 function UserInfo({ title, children }) {
     return (
-        <Grid2 xs={6}>
-            <Card sx={{ width: '100%' }} variant='outlined'>
+        <Grid2 md={6} xs={12}>
+            <Card variant='outlined'>
                 <CardContent>
-                    <Stack
-                        direction='row'
-                        justifyContent='space-between'
-                        alignItems='center'
-                    >
+                    <Stack>
                         <Typography variant='h6'>{title}</Typography>
                         <Typography variant='body1'>{children}</Typography>
                     </Stack>
