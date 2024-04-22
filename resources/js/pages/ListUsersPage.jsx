@@ -1,8 +1,9 @@
 import { DeleteForever, Edit, Visibility } from '@mui/icons-material';
 import { IconButton, Stack, Tooltip } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import { Link } from 'react-router-dom';
 
-import { getUsers } from '../api/usersApi.js';
+import { fetchUsers } from '../api/usersApi.js';
 import withRemotePaginated from '../components/hocs/withRemotePaginated.jsx';
 import Page from '../components/layout/Page.jsx';
 import { QUERY_KEYS } from '../utils/queryKeys.js';
@@ -26,7 +27,13 @@ const columns = [
                 height='100%'
             >
                 <Tooltip title='View' arrow>
-                    <IconButton aria-label='view' color='primary' size='small'>
+                    <IconButton
+                        aria-label='view'
+                        color='primary'
+                        size='small'
+                        component={Link}
+                        to={`/users/${row.id}`}
+                    >
                         <Visibility />
                     </IconButton>
                 </Tooltip>
@@ -47,7 +54,7 @@ const columns = [
 
 function ListUsersPage({ data }) {
     return (
-        <Page title='Users'>
+        <Page title='Users' breadcrumbs={[{ to: '/users', label: 'Users' }]}>
             <DataGrid
                 columns={columns}
                 rows={data.data}
@@ -59,4 +66,4 @@ function ListUsersPage({ data }) {
     );
 }
 
-export default withRemotePaginated(getUsers, QUERY_KEYS.USERS)(ListUsersPage);
+export default withRemotePaginated(fetchUsers, QUERY_KEYS.USERS)(ListUsersPage);

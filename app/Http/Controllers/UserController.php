@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Data\StoreUserData;
+use App\Http\Resources\UserDetailedResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\UserService;
@@ -44,7 +45,7 @@ class UserController extends Controller
 
     public function show(User $user): JsonResponse
     {
-        return response()->ok(UserResource::make($user));
+        return response()->ok(UserDetailedResource::make($user));
     }
 
     public function destroy(User $user, UserService $userService): Response

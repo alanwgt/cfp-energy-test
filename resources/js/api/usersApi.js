@@ -1,6 +1,6 @@
 import axios from '../lib/axios.js';
 
-export const getUsers = props => {
+export const fetchUsers = props => {
     const params = {};
     if (props.page) {
         params.page = props.page;
@@ -14,3 +14,5 @@ export const getUsers = props => {
         params,
     });
 };
+
+export const fetchUser = ({ id }) => axios.get(`users/${id}`);
