@@ -22,6 +22,8 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../../context/AuthContext.jsx';
 
+const pages = [{ name: 'Users', path: '/users', Icon: Person }];
+
 function stringToColor(string) {
     let hash = 0;
     let i;
@@ -81,6 +83,7 @@ export function Shell({ children }) {
                             sx={{
                                 width: '50px',
                                 height: '50px',
+                                my: 'auto',
                                 mr: {
                                     xs: 1,
                                     md: 3,
@@ -90,7 +93,11 @@ export function Shell({ children }) {
                             <img
                                 src='images/cfp.svg'
                                 alt='CFP Energy Logo'
-                                style={{ maxWidth: '100%' }}
+                                style={{
+                                    maxWidth: '100%',
+                                    height: '100%',
+                                    margin: '0 auto',
+                                }}
                             />
                         </Box>
                         <Typography
@@ -145,12 +152,19 @@ export function Shell({ children }) {
                                     display: { xs: 'block', md: 'none' },
                                 }}
                             >
-                                <MenuItem onClick={handleCloseNavMenu}>
-                                    <ListItemIcon>
-                                        <Person />
-                                    </ListItemIcon>
-                                    <ListItemText>Users</ListItemText>
-                                </MenuItem>
+                                {pages.map(page => (
+                                    <MenuItem
+                                        key={page.name}
+                                        onClick={handleCloseNavMenu}
+                                        component={Link}
+                                        to={page.path}
+                                    >
+                                        <ListItemIcon>
+                                            <page.Icon />
+                                        </ListItemIcon>
+                                        <ListItemText>{page.name}</ListItemText>
+                                    </MenuItem>
+                                ))}
                             </Menu>
                         </Box>
                         <Typography
@@ -177,16 +191,16 @@ export function Shell({ children }) {
                                 display: { xs: 'none', md: 'flex' },
                             }}
                         >
-                            <Button
-                                onClick={handleCloseNavMenu}
-                                sx={{
-                                    my: 2,
-                                    color: 'white',
-                                    display: 'block',
-                                }}
-                            >
-                                Users
-                            </Button>
+                            {pages.map(page => (
+                                <Button
+                                    key={page.name}
+                                    component={Link}
+                                    to={page.path}
+                                    sx={{ color: 'white' }}
+                                >
+                                    {page.name}
+                                </Button>
+                            ))}
                         </Box>
 
                         <Box sx={{ flexGrow: 0 }}>

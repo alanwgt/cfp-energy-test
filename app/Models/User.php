@@ -41,6 +41,7 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @method static UserQueryBuilder|User newModelQuery()
  * @method static UserQueryBuilder|User newQuery()
  * @method static UserQueryBuilder|User query()
+ * @method static UserQueryBuilder|User scopeOrdered(\App\QueryBuilders\UserQueryBuilder $query)
  * @method static UserQueryBuilder|User whereAuthenticationMethod($value)
  * @method static UserQueryBuilder|User whereCreatedAt($value)
  * @method static UserQueryBuilder|User whereDateOfBirth($value)

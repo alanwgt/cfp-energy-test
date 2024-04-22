@@ -1,9 +1,9 @@
-import { Delete, DeleteForever, Edit, Visibility } from '@mui/icons-material';
+import { DeleteForever, Edit, Visibility } from '@mui/icons-material';
 import { IconButton, Stack, Tooltip } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 
 import { getUsers } from '../api/usersApi.js';
-import withRemoteData from '../components/hocs/withRemoteData.jsx';
+import withRemotePaginated from '../components/hocs/withRemotePaginated.jsx';
 import Page from '../components/layout/Page.jsx';
 import { QUERY_KEYS } from '../utils/queryKeys.js';
 
@@ -13,7 +13,6 @@ const columns = [
     { field: 'username', headerName: 'Username', width: 150 },
     { field: 'email', headerName: 'Email', flex: 1 },
     {
-        field: '',
         headerName: 'Actions',
         sortable: false,
         width: 150,
@@ -60,4 +59,4 @@ function ListUsersPage({ data }) {
     );
 }
 
-export default withRemoteData(getUsers, QUERY_KEYS.USERS)(ListUsersPage);
+export default withRemotePaginated(getUsers, QUERY_KEYS.USERS)(ListUsersPage);

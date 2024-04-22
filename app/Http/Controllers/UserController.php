@@ -22,7 +22,10 @@ class UserController extends Controller
 
     public function index(): JsonResponse
     {
-        return response()->ok(UserResource::collection(User::get()));
+        return response()->ok(UserResource::collection(
+            User::query()
+                ->paginate()
+        ));
     }
 
     public function store(StoreUserData $userData, UserService $userService): JsonResponse

@@ -1,33 +1,14 @@
-import { Suspense } from 'react';
+import { useSuspenseQuery } from '@tanstack/react-query';
 
-import {
-    QueryErrorResetBoundary,
-    useSuspenseQuery,
-} from '@tanstack/react-query';
-import { ErrorBoundary } from 'react-error-boundary';
-
-import Exception from '../feedback/Exception.jsx';
-import Loading from '../feedback/Loading.jsx';
-
-export function withSuspenseAndErrorHandling(WrappedComponent) {
-    return function ErrorBoundaryWrapper(props) {
-        return (
-            <QueryErrorResetBoundary>
-                {({ reset }) => (
-                    <ErrorBoundary onReset={reset} fallbackRender={Exception}>
-                        <Suspense fallback={<Loading />}>
-                            <WrappedComponent {...props} />
-                        </Suspense>
-                    </ErrorBoundary>
-                )}
-            </QueryErrorResetBoundary>
-        );
-    };
-}
+import withSuspenseAndErrorHandling from './withSuspenseAndErrorHandling.jsx';
 
 export default function withRemoteData(queryFn, queryKey) {
     return function withRemoteDataWrapped(WrappedComponent) {
         const handler = function QueryHandler(props) {
+            if (typeof queryKey === 'function') {
+                queryKey = queryKey(props);
+            }
+
             const { data } = useSuspenseQuery({ queryKey, queryFn });
 
             return <WrappedComponent {...props} data={data.data} />;
