@@ -1,15 +1,9 @@
-import { useEffect, useState } from 'react';
-
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 
 import withSuspenseAndErrorHandling from './withSuspenseAndErrorHandling.jsx';
 
-export default function withRemoteData(
-    queryFn,
-    queryKey,
-    useURLParams = false
-) {
+export default function withRemoteData(queryFn, queryKey) {
     return function withRemoteDataWrapped(WrappedComponent) {
         const handler = function QueryHandler(props) {
             if (typeof queryKey === 'function') {
@@ -17,16 +11,9 @@ export default function withRemoteData(
             }
 
             const params = useParams();
-            const [queryK, setQueryK] = useState(queryKey);
-
-            useEffect(() => {
-                if (useURLParams) {
-                    setQueryK(k => [...k, ...Object.values(params)]);
-                }
-            }, [params]);
 
             const { data } = useSuspenseQuery({
-                queryK,
+                queryKey: [...queryKey, ...Object.values(params)],
                 queryFn: () => queryFn({ ...params }),
             });
 
