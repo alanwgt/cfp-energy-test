@@ -29,6 +29,7 @@ class UserController extends Controller
         return response()->ok(UserResource::collection(
             User::query()
                 ->whereCanView($user->role)
+                ->where('id', '!=', $user->id)
                 ->paginate()
         ));
     }
