@@ -37,13 +37,13 @@ function ViewUserPage({ data: user }) {
             ]}
         >
             <Grid2 container spacing={2}>
-                <UserInfo title='ID'>{user.id}</UserInfo>
                 <UserInfo title='First Name'>{user.first_name}</UserInfo>
                 <UserInfo title='Last Name'>{user.last_name}</UserInfo>
                 <UserInfo title='Username'>{user.username}</UserInfo>
                 <UserInfo title='Email'>{user.email}</UserInfo>
                 <UserInfo title='Mobile'>{user.phone_number}</UserInfo>
                 <UserInfo title='Role'>{user.role}</UserInfo>
+                <UserInfo title='ID'>{user.id}</UserInfo>
                 <UserInfo title='Email verified'>
                     {user.verified ? (
                         <Check sx={{ color: 'green' }} />
