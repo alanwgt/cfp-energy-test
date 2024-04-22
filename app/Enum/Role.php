@@ -22,4 +22,12 @@ enum Role: string
     {
         return self::ROLE_LEVEL[$this->value] > self::ROLE_LEVEL[$role->value];
     }
+
+    /**
+     * @return array<string>
+     */
+    public function getAllowedRoles(): array
+    {
+        return array_filter(self::values(), fn (string $level) => self::ROLE_LEVEL[$level] < self::ROLE_LEVEL[$this->value]);
+    }
 }

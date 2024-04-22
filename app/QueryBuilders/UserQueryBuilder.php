@@ -2,6 +2,7 @@
 
 namespace App\QueryBuilders;
 
+use App\Enum\Role;
 use Illuminate\Database\Eloquent\Builder;
 
 class UserQueryBuilder extends Builder
@@ -12,5 +13,10 @@ class UserQueryBuilder extends Builder
             $query->where('username', '=', $identification)
                 ->orWhere('email', '=', $identification);
         });
+    }
+
+    public function whereCanView(Role $role): self
+    {
+        return $this->whereIn('role', $role->getAllowedRoles());
     }
 }

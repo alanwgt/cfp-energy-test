@@ -23,8 +23,12 @@ class UserController extends Controller
 
     public function index(): JsonResponse
     {
+        /** @var User $user */
+        $user = auth()->user();
+
         return response()->ok(UserResource::collection(
             User::query()
+                ->whereCanView($user->role)
                 ->paginate()
         ));
     }

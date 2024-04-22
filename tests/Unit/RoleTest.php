@@ -24,4 +24,18 @@ class RoleTest extends TestCase
         $this->assertFalse(Role::MANAGER->isGreaterThan(Role::ADMIN));
         $this->assertFalse(Role::ADMIN->isGreaterThan(Role::ADMIN));
     }
+
+    public function test_allowed_roles_should_include_all_lower_roles(): void
+    {
+        $this->assertContains(Role::USER->value, Role::ADMIN->getAllowedRoles());
+        $this->assertContains(Role::MANAGER->value, Role::ADMIN->getAllowedRoles());
+        $this->assertContains(Role::USER->value, Role::MANAGER->getAllowedRoles());
+    }
+
+    public function test_allowed_roles_should_not_contain_current_role(): void
+    {
+        $this->assertNotContains(Role::ADMIN->value, Role::ADMIN->getAllowedRoles());
+        $this->assertNotContains(Role::MANAGER->value, Role::MANAGER->getAllowedRoles());
+        $this->assertNotContains(Role::USER->value, Role::USER->getAllowedRoles());
+    }
 }
