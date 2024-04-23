@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Backdrop, Pagination, Stack } from '@mui/material';
+import { Backdrop, Container, Pagination, Stack } from '@mui/material';
 import Box from '@mui/material/Box';
 import { useQuery } from '@tanstack/react-query';
 
@@ -49,14 +49,20 @@ export default function withRemotePaginated(queryFn, queryKey) {
                         <Loading size={64} />
                     </Backdrop>
                     <Box sx={{ flex: 1 }}>{Component}</Box>
-                    <Pagination
-                        count={lastPage}
-                        page={page}
-                        color='primary'
-                        variant='outlined'
-                        onChange={(evt, page) => setPage(page)}
-                        sx={{ alignSelf: 'flex-end' }}
-                    />
+                    <Container sx={{ width: '100%' }}>
+                        <Pagination
+                            count={lastPage}
+                            page={page}
+                            color='primary'
+                            variant='outlined'
+                            onChange={(evt, page) => setPage(page)}
+                            sx={{
+                                mb: 2,
+                                display: 'flex',
+                                justifyContent: 'flex-end',
+                            }}
+                        />
+                    </Container>
                 </Stack>
             );
         };
