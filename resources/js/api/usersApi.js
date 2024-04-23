@@ -16,15 +16,15 @@ export const fetchUsers = props => {
     });
 };
 
-export const fetchUser = ({ id }) => axios.get(`users/${id}`);
+export const fetchUser = ({ id }) =>
+    axios
+        .get(`users/${id}`)
+        .then(data => handleDateProp(data, 'data.data.date_of_birth'));
 
 export const fetchProfile = () =>
-    axios.get('users/me').then(data => {
-        console.log(data);
-        const t = handleDateProp(data, 'data.data.date_of_birth');
-        console.log(data);
-        return t;
-    });
+    axios
+        .get('users/me')
+        .then(data => handleDateProp(data, 'data.data.date_of_birth'));
 
 export const createUser = data => axios.post('users', data);
 

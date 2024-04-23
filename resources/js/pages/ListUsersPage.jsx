@@ -31,6 +31,7 @@ function ListUsersPage({ data }) {
             { field: 'username', headerName: 'Username', width: 150 },
             { field: 'email', headerName: 'Email', flex: 1 },
             {
+                field: 'actions',
                 headerName: 'Actions',
                 sortable: false,
                 width: 150,
@@ -90,7 +91,7 @@ function ListUsersPage({ data }) {
                 ),
             },
         ],
-        []
+        [confirm, mutation]
     );
 
     return (
