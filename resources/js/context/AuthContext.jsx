@@ -17,6 +17,7 @@ export const AuthContext = createContext({
     logout: () => {},
     register: () => {},
     isAuthenticated: false,
+    setUser: () => {},
 });
 
 export const AuthProvider = ({ children }) => {
@@ -29,6 +30,16 @@ export const AuthProvider = ({ children }) => {
             response => response,
             error => {
                 let errMsg = error.response?.data.message || error.message;
+                if (errMsg === 'CSRF token mismatch.') {
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 3000);
+                    toast.error(
+                        'The credentials have expired, the page will be reloaded after 3 seconds'
+                    );
+                    return Promise.reject(errMsg);
+                }
+
                 if (error.response?.status === 401) {
                     setIsAuthenticated(false);
                     setUser(null);
@@ -118,6 +129,7 @@ export const AuthProvider = ({ children }) => {
                 logout,
                 register,
                 isAuthenticated,
+                setUser,
             }}
         >
             {children}
