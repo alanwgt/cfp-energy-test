@@ -6,11 +6,18 @@ use App\Data\StoreUserData;
 use App\Http\Resources\UserDetailedResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\QueryFilters\EmailFilter;
+use App\QueryFilters\IdFilter;
+use App\QueryFilters\NameFilter;
+use App\QueryFilters\OrderBy;
+use App\QueryFilters\QuickSearchFilter;
+use App\QueryFilters\UsernameFilter;
 use App\Services\AuthService;
 use App\Services\UserService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Routing\Controller;
 
 class UserController extends Controller
@@ -27,12 +34,23 @@ class UserController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        return response()->ok(UserResource::collection(
-            User::query()
-                ->whereCanView($user->role)
-                ->where('id', '!=', $user->id)
-                ->paginate()
-        ));
+        $query = User::query()
+            ->whereCanView($user->role)
+            ->where('id', '!=', $user->id);
+
+        $users = app(Pipeline::class)
+            ->send($query)
+            ->through([
+                OrderBy::class,
+                NameFilter::class,
+                EmailFilter::class,
+                UsernameFilter::class,
+                IdFilter::class,
+                QuickSearchFilter::class,
+            ])
+            ->thenReturn();
+
+        return response()->ok(UserResource::collection($users->paginate()));
     }
 
     public function store(StoreUserData $userData, UserService $userService): JsonResponse

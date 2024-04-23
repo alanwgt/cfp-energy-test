@@ -36,9 +36,10 @@ export default function withRemotePaginated(queryFn, queryKey) {
                 <Exception error={error} />
             ) : (
                 <WrappedComponent
-                    filter={filters}
+                    filters={filters}
                     setFilters={setFilters}
                     data={data?.data ?? { data: [] }}
+                    isLoading={isLoading}
                     {...props}
                 />
             );

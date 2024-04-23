@@ -7,8 +7,31 @@ export const fetchUsers = props => {
         params.page = props.page;
     }
 
-    if (props.filters && Object.keys(props.filters).length) {
-        params.filters = encodeURIComponent(JSON.stringify(props.filters));
+    const { filters } = props;
+    const { quick_filter, sort_order, sort_by, ...otherFilters } = filters;
+    if (sort_order && sort_by) {
+        params.sort_order = sort_order;
+        params.sort_by = sort_by;
+    }
+
+    if (quick_filter) {
+        params.quick_filter = quick_filter;
+    }
+
+    if (otherFilters && Object.keys(otherFilters).length) {
+        params.filters = [];
+        Object.keys(otherFilters).forEach(key => {
+            const filter = otherFilters[key];
+            if (!filter.value) {
+                return;
+            }
+
+            params.filters.push({
+                field: key,
+                operator: filter.operator,
+                value: filter.value,
+            });
+        });
     }
 
     return axios.get('users', {

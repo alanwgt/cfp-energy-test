@@ -1,8 +1,12 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { DeleteForever, Edit, Visibility } from '@mui/icons-material';
 import { IconButton, Stack, Tooltip } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
+import {
+    DataGrid,
+    GridToolbar,
+    getGridStringOperators,
+} from '@mui/x-data-grid';
 import { useMutation } from '@tanstack/react-query';
 import { useConfirm } from 'material-ui-confirm';
 import { Link } from 'react-router-dom';
@@ -14,7 +18,15 @@ import queryClient from '../lib/queryClient.js';
 import toast from '../lib/toast.js';
 import { QUERY_KEYS } from '../utils/queryKeys.js';
 
-function ListUsersPage({ data }) {
+const filterOperators = getGridStringOperators().filter(
+    operator =>
+        operator.value === 'equals' ||
+        operator.value === 'contains' ||
+        operator.value === 'startsWith' ||
+        operator.value === 'endsWith'
+);
+
+function ListUsersPage({ data, isLoading, filters, setFilters }) {
     const confirm = useConfirm();
     const mutation = useMutation({
         mutationFn: id => deleteUser({ id }),
@@ -26,15 +38,21 @@ function ListUsersPage({ data }) {
     });
     const columns = useMemo(
         () => [
-            { field: 'id', headerName: 'ID', width: 50 },
-            { field: 'first_name', headerName: 'First Name' },
-            { field: 'username', headerName: 'Username', width: 150 },
-            { field: 'email', headerName: 'Email', flex: 1 },
+            { field: 'id', headerName: 'ID', width: 50, filterOperators },
+            { field: 'first_name', headerName: 'First Name', filterOperators },
+            {
+                field: 'username',
+                headerName: 'Username',
+                width: 150,
+                filterOperators,
+            },
+            { field: 'email', headerName: 'Email', flex: 1, filterOperators },
             {
                 field: 'actions',
                 headerName: 'Actions',
                 sortable: false,
                 width: 150,
+                type: 'actions',
                 filterable: false,
                 renderCell: ({ row }) => (
                     <Stack
@@ -94,14 +112,83 @@ function ListUsersPage({ data }) {
         [confirm, mutation]
     );
 
+    const handleSortChange = useCallback(sortModel => {
+        if (!sortModel.length) {
+            if (filters.sort_order) {
+                setFilters(({ sort_order, sort_by, ...otherFilters }) => ({
+                    ...otherFilters,
+                }));
+            }
+            return;
+        }
+
+        const { field, sort } = sortModel[0];
+
+        setFilters(filters => ({
+            ...filters,
+            sort_by: field,
+            sort_order: sort,
+        }));
+    }, []);
+
+    const handleFilterChange = useCallback(filterModel => {
+        const { quickFilterValues: quickFilter, items } = filterModel;
+        const localFilters = { ...filters };
+
+        for (const key in localFilters) {
+            if (!items.find(item => item.field === key)) {
+                delete localFilters[key];
+            }
+        }
+
+        if (!quickFilter.length) {
+            delete localFilters.quick_filter;
+        } else {
+            localFilters.quick_filter = quickFilter[0];
+        }
+
+        setFilters({
+            ...localFilters,
+            ...items.reduce((acc, item) => {
+                const { field, operator, value } = item;
+                return {
+                    ...acc,
+                    [field]: {
+                        operator,
+                        value,
+                    },
+                };
+            }, {}),
+        });
+    }, []);
+
     return (
         <Page title='Users' breadcrumbs={[{ to: '/users', label: 'Users' }]}>
             <DataGrid
                 columns={columns}
                 rows={data.data}
-                paginationMode='client'
+                paginationMode='server'
+                sortingMode='server'
+                filterMode='server'
                 hideFooter
                 hideFooterPagination
+                disableRowSelectionOnClick
+                loading={isLoading}
+                onSortModelChange={handleSortChange}
+                onFilterModelChange={handleFilterChange}
+                rowCount={data.meta?.total ?? 0}
+                slots={{
+                    toolbar: GridToolbar,
+                }}
+                slotProps={{
+                    toolbar: {
+                        csvOptions: { disableToolbarButton: true },
+                        printOptions: { disableToolbarButton: true },
+                        showQuickFilter: true,
+                        quickFilterProps: { debounceMs: 250 },
+                    },
+                }}
+                filterDebounceMs={250}
             />
         </Page>
     );

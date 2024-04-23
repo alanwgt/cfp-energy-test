@@ -31,13 +31,10 @@ export const AuthProvider = ({ children }) => {
             error => {
                 let errMsg = error.response?.data.message || error.message;
                 if (errMsg === 'CSRF token mismatch.') {
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 3000);
-                    toast.error(
-                        'The credentials have expired, the page will be reloaded after 3 seconds'
-                    );
-                    return Promise.reject(errMsg);
+                    toast.error('The credentials have expired');
+                    return axios
+                        .get(INIT_CSRF_URL)
+                        .then(() => Promise.reject(errMsg));
                 }
 
                 if (error.response?.status === 401) {

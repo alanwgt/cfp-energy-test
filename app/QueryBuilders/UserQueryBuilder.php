@@ -19,4 +19,22 @@ class UserQueryBuilder extends Builder
     {
         return $this->whereIn('role', $role->getAllowedRoles());
     }
+
+    public function whereLike(string $column, string $value): self
+    {
+        return $this->where($column, 'like', '%'.$value.'%');
+    }
+
+    public function orWhereLike(string $column, string $value): self
+    {
+        return $this->orWhere($column, 'like', '%'.$value.'%');
+    }
+
+    public function search(string $search): self
+    {
+        return $this->whereLike('username', $search)
+            ->orWhereLike('email', $search)
+            ->orWhereLike('first_name', $search)
+            ->orWhereLike('last_name', $search);
+    }
 }

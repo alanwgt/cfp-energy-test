@@ -52,6 +52,9 @@
         "lint": [
             "pint . --test"
         ],
+        "fix-style": [
+            "pint ."
+        ],
         "test": [
             "@php artisan test --parallel --colors=always --stop-on-failure"
         ],

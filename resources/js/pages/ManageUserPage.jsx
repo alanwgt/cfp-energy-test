@@ -11,7 +11,8 @@ function ManageUserPage({ data: user }) {
             title={user.username}
             breadcrumbs={[
                 { label: 'Users', to: '/users' },
-                { label: user.username },
+                { label: user.username, to: `/users/${user.id}` },
+                { label: 'Edit' },
             ]}
         >
             <ManageUser
