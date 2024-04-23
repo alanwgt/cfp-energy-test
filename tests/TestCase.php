@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Enum\AuthenticationMethod;
 use App\Enum\Role;
 use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable as UserContract;
@@ -39,6 +40,7 @@ abstract class TestCase extends BaseTestCase
             'date_of_birth' => fake()->date,
             'username' => fake()->userName,
             'role' => $role->value,
+            'authentication_method' => AuthenticationMethod::PASSWORD->value,
         ];
     }
 
@@ -49,13 +51,14 @@ abstract class TestCase extends BaseTestCase
     {
         return [
             'email' => fake()->email,
-            'password' => 'password',
+            'password' => null,
             'first_name' => fake()->firstName,
             'last_name' => fake()->lastName,
             'phone_number' => fake()->phoneNumber,
             'date_of_birth' => fake()->date,
             'username' => $user->username,
             'role' => $role->value ?? $user->role->value,
+            'authentication_method' => AuthenticationMethod::PASSWORD->value,
         ];
     }
 

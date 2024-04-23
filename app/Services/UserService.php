@@ -18,6 +18,10 @@ class UserService
             throw new BadRequestException('Username cannot be changed');
         }
 
+        if ($userData->authentication_method === AuthenticationMethod::PASSWORD && $user === null && empty($userData->password)) {
+            throw new BadRequestException('Password is required when using password authentication');
+        }
+
         // check if current user has permission to update the role
         if ($user !== null && $userData->role !== $user->role) {
             /** @var User $currentUser */
@@ -33,13 +37,23 @@ class UserService
         $user ??= new User();
         $user->email = $userData->email;
         $user->username = $userData->username;
-        $user->password = $userData->password !== null ? \Hash::make($userData->password) : null;
         $user->authentication_method = $userData->usesOtp() ? AuthenticationMethod::OTP : AuthenticationMethod::PASSWORD;
         $user->first_name = $userData->first_name;
         $user->last_name = $userData->last_name;
         $user->phone_number = $userData->phone_number;
         $user->date_of_birth = $userData->date_of_birth;
         $user->role = $userData->role;
+
+        if (
+            $userData->authentication_method === AuthenticationMethod::PASSWORD
+            && filled($userData->password)
+            && ! $this->isSamePassword($userData, $user)
+        ) {
+            $user->password = \Hash::make($userData->password);
+        } elseif ($userData->authentication_method === AuthenticationMethod::OTP) {
+            $user->password = null;
+        }
+
         $user->save();
 
         return $user;
@@ -48,5 +62,18 @@ class UserService
     public function delete(User $user): void
     {
         $user->delete();
+    }
+
+    private function isSamePassword(StoreUserData $userData, ?User $user): bool
+    {
+        if ($user === null || ! $user->exists) {
+            return false;
+        }
+
+        if ($userData->password === null) {
+            throw new \RuntimeException('Password is required');
+        }
+
+        return \Hash::check($userData->password, $user->password);
     }
 }

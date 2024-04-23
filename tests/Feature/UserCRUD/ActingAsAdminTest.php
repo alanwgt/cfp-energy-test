@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\UserCRUD;
 
+use App\Enum\AuthenticationMethod;
 use App\Enum\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -55,10 +56,11 @@ class ActingAsAdminTest extends TestCase
         $this->assertUserHas($user, $userData);
     }
 
-    public function test_created_user_without_password_uses_otp(): void
+    public function test_can_create_account_with_otp(): void
     {
         $userData = $this->generateUserData();
         $userData['password'] = null;
+        $userData['authentication_method'] = AuthenticationMethod::OTP->value;
         $response = $this->postJson(route('api.v1.users.store'), $userData)
             ->assertSuccessful();
 

@@ -211,7 +211,9 @@ export function Shell({ children }) {
                                 >
                                     <Avatar
                                         alt={user.firstName}
-                                        {...stringAvatar(user.full_name)}
+                                        {...stringAvatar(
+                                            `${user.first_name} ${user.last_name}`
+                                        )}
                                     />
                                 </IconButton>
                             </Tooltip>

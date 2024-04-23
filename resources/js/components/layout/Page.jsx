@@ -9,7 +9,10 @@ export default function Page({ title, children, breadcrumbs = [] }) {
             {breadcrumbs.length > 0 && (
                 <Breadcrumbs>
                     {computedBreadcrumbs.map(breadcrumb => (
-                        <Link to={breadcrumb.to ?? '#'} key={breadcrumb.to}>
+                        <Link
+                            to={breadcrumb.to ?? '#'}
+                            key={breadcrumb.to ?? '#'}
+                        >
                             {breadcrumb.label}
                         </Link>
                     ))}

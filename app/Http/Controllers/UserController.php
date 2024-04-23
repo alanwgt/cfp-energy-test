@@ -6,6 +6,7 @@ use App\Data\StoreUserData;
 use App\Http\Resources\UserDetailedResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Services\AuthService;
 use App\Services\UserService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
@@ -41,11 +42,16 @@ class UserController extends Controller
         return response()->ok(UserResource::make($user));
     }
 
-    public function update(User $user, StoreUserData $userData, UserService $userService): JsonResponse
+    public function update(User $user, StoreUserData $userData, UserService $userService, AuthService $authService): JsonResponse
     {
         $user = $userService->upsert($userData, user: $user);
 
-        return response()->ok(UserResource::make($user));
+        // If the user is updating their own user, we need to re-login the user
+        if ($user->is(auth()->user())) {
+            $authService->loginUser($user);
+        }
+
+        return response()->ok(UserDetailedResource::make($user));
     }
 
     public function show(User $user): JsonResponse
@@ -58,5 +64,10 @@ class UserController extends Controller
         $userService->delete($user);
 
         return response()->noContent();
+    }
+
+    public function me(): JsonResponse
+    {
+        return response()->ok(UserDetailedResource::make(auth()->user()));
     }
 }

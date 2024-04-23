@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Http\Resources\PreludeResource;
+use App\Http\Resources\UserDetailedResource;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -14,17 +14,16 @@ class AuthTest extends TestCase
     public function test_user_can_sign_in_by_email(): void
     {
         $email = fake()->email;
-        $password = fake()->password;
 
         /** @var User $user */
-        $user = User::factory()->password($password)->create([
+        $user = User::factory()->create([
             'email' => $email,
         ]);
 
         $this->postJson(route('api.v1.auth.sign-in'), [
             'identification' => $email,
-            'password' => $password,
-        ])->assertSuccessful()->assertJson(['data' => PreludeResource::make($user)->jsonSerialize()]);
+            'password' => 'password',
+        ])->assertSuccessful()->assertJson(['data' => UserDetailedResource::make($user)->jsonSerialize()]);
 
         $this->assertAuthenticatedAs($user);
     }
@@ -42,7 +41,7 @@ class AuthTest extends TestCase
         $this->postJson(route('api.v1.auth.sign-in'), [
             'identification' => $username,
             'password' => $password,
-        ])->assertSuccessful()->assertJson(['data' => PreludeResource::make($user)->jsonSerialize()]);
+        ])->assertSuccessful()->assertJson(['data' => UserDetailedResource::make($user)->jsonSerialize()]);
 
         $this->assertAuthenticatedAs($user);
     }
@@ -53,7 +52,7 @@ class AuthTest extends TestCase
 
         $this->getJson(route('api.v1.auth.check'))
             ->assertSuccessful()
-            ->assertJson(['data' => PreludeResource::make(auth()->user())->jsonSerialize()]);
+            ->assertJson(['data' => UserDetailedResource::make(auth()->user())->jsonSerialize()]);
     }
 
     public function test_user_cannot_sign_in_with_invalid_credentials(): void

@@ -26,9 +26,9 @@ class UserDetailedResource extends JsonResource
             'username' => $this->resource->username,
             'phone_number' => $this->resource->phone_number,
             'date_of_birth' => $this->resource->date_of_birth,
-            'role' => $this->resource->role,
-            'authentication_method' => $this->resource->authentication_method,
             'verified' => $this->resource->email_verified_at !== null,
+            'role' => $this->resource->role->value,
+            'authentication_method' => $this->resource->authentication_method->value,
         ];
     }
 }

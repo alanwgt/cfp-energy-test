@@ -52,4 +52,4 @@ function ViewUserPage({ data: user }) {
     );
 }
 
-export default withRemoteData(fetchUser, QUERY_KEYS.USERS, true)(ViewUserPage);
+export default withRemoteData(fetchUser, QUERY_KEYS.USERS)(ViewUserPage);

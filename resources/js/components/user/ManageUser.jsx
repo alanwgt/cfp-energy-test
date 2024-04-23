@@ -1,194 +1,250 @@
 import { useState } from 'react';
 
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { IconButton, InputAdornment, Stack, TextField } from '@mui/material';
+import { IconButton, InputAdornment, TextField } from '@mui/material';
+import Grid2 from '@mui/material/Unstable_Grid2';
 import { DatePicker } from '@mui/x-date-pickers';
+import { useMutation } from '@tanstack/react-query';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
+import { createUser, updateUser } from '../../api/usersApi.js';
+import toast from '../../lib/toast.js';
 import LoadingButton from '../inputs/LoadingButton.jsx';
 
 const initialState = {
     username: '',
     email: '',
     password: '',
-    firstName: '',
-    lastName: '',
-    phoneNumber: '',
-    dateOfBirth: '',
+    first_name: '',
+    last_name: '',
+    phone_number: '',
+    date_of_birth: '',
+    authentication_method: 'password',
 };
 
 const signupSchema = Yup.object().shape({
     username: Yup.string().min(3).required().label('Username'),
     email: Yup.string().email().required().label('Email Address'),
-    password: Yup.string().min(8).required().label('Password'),
-    firstName: Yup.string().min(3).required().label('First Name'),
-    lastName: Yup.string().min(3).required().label('Last Name'),
-    phoneNumber: Yup.string().required().label('Phone Number'),
-    dateOfBirth: Yup.date().required().label('Date of Birth'),
+    password: Yup.string()
+        .min(8)
+        .label('Password')
+        .when('id', (id, schema) => (id ? schema : schema.required())),
+    first_name: Yup.string().min(3).required().label('First Name'),
+    last_name: Yup.string().min(3).required().label('Last Name'),
+    phone_number: Yup.string().required().label('Phone Number'),
+    date_of_birth: Yup.date().required().label('Date of Birth'),
 });
 
-export default function ManageUser({ onSubmit, initialValues = null }) {
+function Cell({ children }) {
+    return (
+        <Grid2 item xs={12} md={6}>
+            {children}
+        </Grid2>
+    );
+}
+
+export default function ManageUser({
+    onSuccess = () => {},
+    initialValues = null,
+}) {
+    const isInEditMode = Boolean(initialValues.id);
     const [showPassword, setShowPassword] = useState(false);
+    const mutation = useMutation({
+        mutationFn: values =>
+            initialValues.id ? updateUser(values) : createUser(values),
+        mutationKey: ['users', initialValues?.id],
+    });
     const formik = useFormik({
         initialValues: initialValues || initialState,
         validationSchema: signupSchema,
         onSubmit: (values, { setSubmitting }) => {
-            onSubmit(values).finally(() => setSubmitting(false));
+            mutation.mutate(values, {
+                onSettled: () => setSubmitting(false),
+                onSuccess: ({ data }) => {
+                    toast.success('Success!');
+                    onSuccess(data.data);
+                },
+            });
         },
     });
 
     return (
         <form onSubmit={formik.handleSubmit}>
-            <Stack spacing={2}>
-                <TextField
-                    label='Username'
-                    name='username'
-                    autoComplete='username'
-                    required
-                    fullWidth
-                    value={formik.values.username}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={
-                        formik.touched.username &&
-                        Boolean(formik.errors.username)
-                    }
-                    helperText={
-                        formik.touched.username && formik.errors.username
-                    }
-                />
-                <TextField
-                    label='Email Address'
-                    name='email'
-                    autoComplete='email'
-                    type='email'
-                    required
-                    fullWidth
-                    value={formik.values.email}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.email && Boolean(formik.errors.email)}
-                    helperText={formik.touched.email && formik.errors.email}
-                />
-                <TextField
-                    name='password'
-                    label='Password'
-                    type={showPassword ? 'text' : 'password'}
-                    autoComplete='new-password'
-                    required
-                    fullWidth
-                    value={formik.values.password}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={
-                        formik.touched.password &&
-                        Boolean(formik.errors.password)
-                    }
-                    helperText={
-                        formik.touched.password && formik.errors.password
-                    }
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position='end'>
-                                <IconButton
-                                    tabIndex={-1}
-                                    aria-label='toggle password visibility'
-                                    onClick={() =>
-                                        setShowPassword(show => !show)
-                                    }
-                                >
-                                    {showPassword ? (
-                                        <VisibilityOff />
-                                    ) : (
-                                        <Visibility />
-                                    )}
-                                </IconButton>
-                            </InputAdornment>
-                        ),
-                    }}
-                />
-                <TextField
-                    label='First Name'
-                    name='firstName'
-                    autoComplete='given-name'
-                    required
-                    fullWidth
-                    value={formik.values.firstName}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={
-                        formik.touched.firstName &&
-                        Boolean(formik.errors.firstName)
-                    }
-                    helperText={
-                        formik.touched.firstName && formik.errors.firstName
-                    }
-                />
-                <TextField
-                    label='Last Name'
-                    name='lastName'
-                    autoComplete='family-name'
-                    required
-                    fullWidth
-                    value={formik.values.lastName}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={
-                        formik.touched.lastName &&
-                        Boolean(formik.errors.lastName)
-                    }
-                    helperText={
-                        formik.touched.lastName && formik.errors.lastName
-                    }
-                />
-                <TextField
-                    label='Phone Number'
-                    name='phoneNumber'
-                    autoComplete='tel'
-                    type='tel'
-                    required
-                    fullWidth
-                    value={formik.values.phoneNumber}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={
-                        formik.touched.phoneNumber &&
-                        Boolean(formik.errors.phoneNumber)
-                    }
-                    helperText={
-                        formik.touched.phoneNumber && formik.errors.phoneNumber
-                    }
-                />
-                <DatePicker
-                    name='dateOfBirth'
-                    label='Date of Birth'
-                    required
-                    fullWidth
-                    slotProps={{ textField: { fullWidth: true } }}
-                    value={formik.values.dateOfBirth}
-                    onChange={value =>
-                        formik.setFieldValue('dateOfBirth', value)
-                    }
-                    onBlur={formik.handleBlur}
-                    error={
-                        formik.touched.dateOfBirth &&
-                        Boolean(formik.errors.dateOfBirth)
-                    }
-                    helperText={
-                        formik.touched.dateOfBirth && formik.errors.dateOfBirth
-                    }
-                />
-                <LoadingButton
-                    loading={formik.isSubmitting}
-                    type='submit'
-                    fullWidth
-                    variant='contained'
-                    sx={{ mt: 3, mb: 2 }}
-                >
-                    {initialValues ? 'Save' : 'Sign Up'}
-                </LoadingButton>
-            </Stack>
+            <input
+                type='hidden'
+                name='authentication_method'
+                value='password'
+            />
+            <Grid2 container spacing={2}>
+                <Cell>
+                    <TextField
+                        label='Username'
+                        name='username'
+                        autoComplete='username'
+                        fullWidth
+                        value={formik.values.username}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        disabled={isInEditMode}
+                        error={
+                            formik.touched.username &&
+                            Boolean(formik.errors.username)
+                        }
+                        helperText={
+                            (formik.touched.username &&
+                                formik.errors.username) ||
+                            (isInEditMode && 'Cannot change username')
+                        }
+                    />
+                </Cell>
+                <Cell>
+                    <TextField
+                        label='Email Address'
+                        name='email'
+                        autoComplete='email'
+                        type='email'
+                        fullWidth
+                        value={formik.values.email}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                            formik.touched.email && Boolean(formik.errors.email)
+                        }
+                        helperText={formik.touched.email && formik.errors.email}
+                    />
+                </Cell>
+                <Cell>
+                    <TextField
+                        name='password'
+                        label='Password'
+                        type={showPassword ? 'text' : 'password'}
+                        autoComplete='new-password'
+                        fullWidth
+                        value={formik.values.password}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                            formik.touched.password &&
+                            Boolean(formik.errors.password)
+                        }
+                        helperText={
+                            (formik.touched.password &&
+                                formik.errors.password) ||
+                            (isInEditMode &&
+                                'Leave blank to keep the same password')
+                        }
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position='end'>
+                                    <IconButton
+                                        tabIndex={-1}
+                                        aria-label='toggle password visibility'
+                                        onClick={() =>
+                                            setShowPassword(show => !show)
+                                        }
+                                    >
+                                        {showPassword ? (
+                                            <VisibilityOff />
+                                        ) : (
+                                            <Visibility />
+                                        )}
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+                </Cell>
+                <Cell>
+                    <TextField
+                        label='First Name'
+                        name='first_name'
+                        autoComplete='given-name'
+                        fullWidth
+                        value={formik.values.first_name}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                            formik.touched.first_name &&
+                            Boolean(formik.errors.first_name)
+                        }
+                        helperText={
+                            formik.touched.first_name &&
+                            formik.errors.first_name
+                        }
+                    />
+                </Cell>
+                <Cell>
+                    <TextField
+                        label='Last Name'
+                        name='last_name'
+                        autoComplete='family-name'
+                        fullWidth
+                        value={formik.values.last_name}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                            formik.touched.last_name &&
+                            Boolean(formik.errors.last_name)
+                        }
+                        helperText={
+                            formik.touched.last_name && formik.errors.last_name
+                        }
+                    />
+                </Cell>
+                <Cell>
+                    <TextField
+                        label='Phone Number'
+                        name='phone_number'
+                        autoComplete='tel'
+                        type='tel'
+                        fullWidth
+                        value={formik.values.phone_number}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                            formik.touched.phone_number &&
+                            Boolean(formik.errors.phone_number)
+                        }
+                        helperText={
+                            formik.touched.phone_number &&
+                            formik.errors.phone_number
+                        }
+                    />
+                </Cell>
+                <Cell>
+                    <DatePicker
+                        name='date_of_birth'
+                        label='Date of Birth'
+                        fullWidth
+                        slotProps={{ textField: { fullWidth: true } }}
+                        value={formik.values.date_of_birth}
+                        onChange={value =>
+                            formik.setFieldValue('dateOfBirth', value)
+                        }
+                        onBlur={formik.handleBlur}
+                        error={
+                            formik.touched.date_of_birth &&
+                            Boolean(formik.errors.date_of_birth)
+                        }
+                        helperText={
+                            formik.touched.date_of_birth &&
+                            formik.errors.date_of_birth
+                        }
+                    />
+                </Cell>
+                <Grid2 xs={12}>
+                    <LoadingButton
+                        loading={formik.isSubmitting}
+                        type='submit'
+                        fullWidth
+                        variant='contained'
+                        sx={{ mt: 3, mb: 2 }}
+                    >
+                        {initialValues ? 'Save' : 'Sign Up'}
+                    </LoadingButton>
+                </Grid2>
+            </Grid2>
         </form>
     );
 }

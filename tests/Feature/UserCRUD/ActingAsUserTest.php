@@ -4,16 +4,19 @@ namespace Tests\Feature\UserCRUD;
 
 use App\Enum\Role;
 use App\Models\User;
+use Illuminate\Foundation\Testing\Concerns\InteractsWithSession;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ActingAsUserTest extends TestCase
 {
+    use InteractsWithSession;
     use RefreshDatabase;
 
     protected function setUp(): void
     {
         parent::setUp();
+        $this->startSession();
         $this->user = $this->actingAsUser();
     }
 
@@ -24,7 +27,7 @@ class ActingAsUserTest extends TestCase
         $this->assertDatabaseMissing('users', $userData);
     }
 
-    public function test_user_can_update_itself(): void
+    public function test_user_can_update_self(): void
     {
         $userData = $this->generateUserUpdateData($this->user);
         $this->patchJson(route('api.v1.users.update', $this->user), $userData)->assertSuccessful();

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Data\StoreUserData;
 use App\Http\Requests\GetAuthenticationMethodRequest;
 use App\Http\Requests\LoginRequest;
-use App\Http\Resources\PreludeResource;
+use App\Http\Resources\UserDetailedResource;
 use App\Services\AuthService;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
@@ -16,7 +16,7 @@ class AuthController extends Controller
 {
     public function check(): JsonResponse
     {
-        return response()->ok(PreludeResource::make(auth()->user()));
+        return response()->ok(UserDetailedResource::make(auth()->user()));
     }
 
     public function method(GetAuthenticationMethodRequest $request, AuthService $authService): JsonResponse
@@ -30,7 +30,7 @@ class AuthController extends Controller
     {
         $authService->login($request->getIdentification(), $request->getPassword(), $request->getOtp());
 
-        return response()->ok(PreludeResource::make(auth()->user()));
+        return response()->ok(UserDetailedResource::make(auth()->user()));
     }
 
     public function signUp(StoreUserData $request, UserService $userService, AuthService $authService): JsonResponse
