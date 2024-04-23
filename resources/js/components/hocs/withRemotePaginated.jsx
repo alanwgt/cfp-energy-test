@@ -10,7 +10,10 @@ import Loading from '../feedback/Loading.jsx';
 export default function withRemotePaginated(queryFn, queryKey) {
     return function withRemotePaginatedWrapper(WrappedComponent) {
         function generateQueryKey({ page, filters }) {
-            return [queryKey, { page, filters }];
+            if (!Array.isArray(queryKey)) {
+                queryKey = [queryKey];
+            }
+            return [...queryKey, page, JSON.stringify(filters)];
         }
 
         return function DataHandler(props) {
