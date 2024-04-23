@@ -29,3 +29,5 @@ export const fetchProfile = () =>
 export const createUser = data => axios.post('users', data);
 
 export const updateUser = ({ id, ...data }) => axios.patch(`users/${id}`, data);
+
+export const deleteUser = ({ id }) => axios.delete(`users/${id}`);

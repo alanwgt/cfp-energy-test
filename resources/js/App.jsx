@@ -12,6 +12,7 @@ import {
     QueryClientProvider,
     QueryErrorResetBoundary,
 } from '@tanstack/react-query';
+import { ConfirmProvider } from 'material-ui-confirm';
 import { SnackbarProvider } from 'notistack';
 import { ErrorBoundary } from 'react-error-boundary';
 import { BrowserRouter } from 'react-router-dom';
@@ -38,19 +39,21 @@ export default function App() {
                                 onReset={reset}
                                 fallbackRender={Exception}
                             >
-                                <Suspense fallback={<Loading />}>
-                                    <AuthProvider>
-                                        <AuthLock>
-                                            <QueryClientProvider
-                                                client={queryClient}
-                                            >
-                                                <Shell>
-                                                    <Routes />
-                                                </Shell>
-                                            </QueryClientProvider>
-                                        </AuthLock>
-                                    </AuthProvider>
-                                </Suspense>
+                                <ConfirmProvider>
+                                    <Suspense fallback={<Loading />}>
+                                        <AuthProvider>
+                                            <AuthLock>
+                                                <QueryClientProvider
+                                                    client={queryClient}
+                                                >
+                                                    <Shell>
+                                                        <Routes />
+                                                    </Shell>
+                                                </QueryClientProvider>
+                                            </AuthLock>
+                                        </AuthProvider>
+                                    </Suspense>
+                                </ConfirmProvider>
                             </ErrorBoundary>
                         )}
                     </QueryErrorResetBoundary>
