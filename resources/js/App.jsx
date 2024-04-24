@@ -41,17 +41,17 @@ export default function App() {
                             >
                                 <ConfirmProvider>
                                     <Suspense fallback={<Loading />}>
-                                        <AuthProvider>
-                                            <AuthLock>
-                                                <QueryClientProvider
-                                                    client={queryClient}
-                                                >
+                                        <QueryClientProvider
+                                            client={queryClient}
+                                        >
+                                            <AuthProvider>
+                                                <AuthLock>
                                                     <Shell>
                                                         <Routes />
                                                     </Shell>
-                                                </QueryClientProvider>
-                                            </AuthLock>
-                                        </AuthProvider>
+                                                </AuthLock>
+                                            </AuthProvider>
+                                        </QueryClientProvider>
                                     </Suspense>
                                 </ConfirmProvider>
                             </ErrorBoundary>
