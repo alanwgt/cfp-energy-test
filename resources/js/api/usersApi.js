@@ -1,7 +1,7 @@
 import axios from '../lib/axios.js';
 import { handleDateProp } from '../utils/date.js';
 
-export const fetchUsers = props => {
+export function fetchUsers(props) {
     const params = {};
     if (props.page) {
         params.page = props.page;
@@ -37,20 +37,41 @@ export const fetchUsers = props => {
     return axios.get('users', {
         params,
     });
-};
+}
 
-export const fetchUser = ({ id }) =>
-    axios
+export function fetchUser({ id }) {
+    return axios
         .get(`users/${id}`)
         .then(data => handleDateProp(data, 'data.data.date_of_birth'));
+}
 
-export const fetchProfile = () =>
-    axios
+export function fetchProfile() {
+    return axios
         .get('users/me')
         .then(data => handleDateProp(data, 'data.data.date_of_birth'));
+}
 
-export const createUser = data => axios.post('users', data);
+export function createUser(data) {
+    return axios.post('users', data);
+}
 
-export const updateUser = ({ id, ...data }) => axios.patch(`users/${id}`, data);
+export function updateUser({ id, ...data }) {
+    return axios.patch(`users/${id}`, data);
+}
 
-export const deleteUser = ({ id }) => axios.delete(`users/${id}`);
+export function deleteUser({ id }) {
+    return axios.delete(`users/${id}`);
+}
+
+export function fetchLoginAttempts(userId) {
+    return function (props) {
+        const params = {};
+        if (props.page) {
+            params.page = props.page;
+        }
+
+        return axios.get(`users/${userId}/login-attempts`, {
+            params,
+        });
+    };
+}

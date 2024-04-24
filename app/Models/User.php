@@ -9,6 +9,7 @@ use Database\Factories\UserFactory;
 use Eloquent;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
@@ -32,6 +33,8 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @property string|null $remember_token
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property-read Collection<int, \App\Models\LoginAttempt> $loginAttempts
+ * @property-read int|null $login_attempts_count
  * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read Collection<int, PersonalAccessToken> $tokens
@@ -42,7 +45,7 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @method static UserQueryBuilder|User newQuery()
  * @method static UserQueryBuilder|User orWhereLike(string $column, string $value)
  * @method static UserQueryBuilder|User query()
- * @method static UserQueryBuilder|User search(\App\QueryBuilders\UserQueryBuilder $query, string $search)
+ * @method static UserQueryBuilder|User search(string $search)
  * @method static UserQueryBuilder|User whereAuthenticationMethod($value)
  * @method static UserQueryBuilder|User whereCanView(\App\Enum\Role $role)
  * @method static UserQueryBuilder|User whereCreatedAt($value)
@@ -91,6 +94,11 @@ class User extends Authenticatable
         'authentication_method' => AuthenticationMethod::class,
         'role' => Role::class,
     ];
+
+    public function loginAttempts(): HasMany
+    {
+        return $this->hasMany(LoginAttempt::class);
+    }
 
     public static function newFactory(): UserFactory
     {

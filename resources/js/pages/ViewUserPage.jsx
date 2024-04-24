@@ -42,7 +42,7 @@ function ViewUserPage({ data: user }) {
 
     return (
         <Page
-            title='View User'
+            title={`${user.first_name} ${user.last_name}`}
             breadcrumbs={[
                 { to: '/users', label: 'Users' },
                 { label: user.username },

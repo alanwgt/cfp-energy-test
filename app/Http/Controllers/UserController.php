@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Data\StoreUserData;
+use App\Http\Resources\LoginAttemptResource;
 use App\Http\Resources\UserDetailedResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
@@ -11,6 +12,7 @@ use App\QueryFilters\IdFilter;
 use App\QueryFilters\NameFilter;
 use App\QueryFilters\OrderBy;
 use App\QueryFilters\QuickSearchFilter;
+use App\QueryFilters\RoleFilter;
 use App\QueryFilters\UsernameFilter;
 use App\Services\UserService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -46,6 +48,7 @@ class UserController extends Controller
                 UsernameFilter::class,
                 IdFilter::class,
                 QuickSearchFilter::class,
+                RoleFilter::class,
             ])
             ->thenReturn();
 
@@ -81,5 +84,16 @@ class UserController extends Controller
     public function me(): JsonResponse
     {
         return response()->ok(UserDetailedResource::make(auth()->user()));
+    }
+
+    public function loginAttempts(User $user): JsonResponse
+    {
+        $this->authorize('view', $user);
+
+        return response()->ok(LoginAttemptResource::collection(
+            $user->loginAttempts()
+                ->orderByDesc('id')
+                ->paginate()
+        ));
     }
 }

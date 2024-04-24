@@ -8,7 +8,7 @@ import { QUERY_KEYS } from '../utils/queryKeys.js';
 function ManageUserPage({ data: user }) {
     return (
         <Page
-            title={user.username}
+            title={`Edit ${user.first_name} ${user.last_name}`}
             breadcrumbs={[
                 { label: 'Users', to: '/users' },
                 { label: user.username, to: `/users/${user.id}` },

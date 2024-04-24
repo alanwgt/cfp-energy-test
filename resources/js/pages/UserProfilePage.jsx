@@ -8,7 +8,7 @@ import { QUERY_KEYS } from '../utils/queryKeys.js';
 function UserProfilePage({ data: profile }) {
     const { setUser } = useAuth();
     return (
-        <Page title={profile.username} breadcrumbs={[{ label: 'Profile' }]}>
+        <Page title='My Profile' breadcrumbs={[{ label: 'Profile' }]}>
             <ManageUser
                 mutationFn={values =>
                     updateUser(values).then(({ data }) => setUser(data.data))

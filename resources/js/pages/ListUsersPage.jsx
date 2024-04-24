@@ -46,6 +46,7 @@ function ListUsersPage({ data, isLoading, filters, setFilters }) {
                 width: 150,
                 filterOperators,
             },
+            { field: 'role', headerName: 'Role', width: 150, filterOperators },
             { field: 'email', headerName: 'Email', flex: 1, filterOperators },
             {
                 field: 'actions',
@@ -171,7 +172,7 @@ function ListUsersPage({ data, isLoading, filters, setFilters }) {
 
     return (
         <Page
-            title='Users'
+            title='User List'
             breadcrumbs={[{ to: '/users', label: 'Users' }]}
             actions={[
                 { label: 'Add user', to: '/users/create', component: Link },

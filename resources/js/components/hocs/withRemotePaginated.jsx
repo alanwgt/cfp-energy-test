@@ -28,6 +28,7 @@ export default function withRemotePaginated(queryFn, queryKey) {
 
             useEffect(() => {
                 if (data) {
+                    console.log(data);
                     setLastPage(data.data.meta.last_page);
                 }
             }, [data]);

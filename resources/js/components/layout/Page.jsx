@@ -1,5 +1,7 @@
 import { Breadcrumbs, ButtonGroup, Container, Stack } from '@mui/material';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
 
 export default function Page({
@@ -38,7 +40,8 @@ export default function Page({
                         </ButtonGroup>
                     )}
                 </Stack>
-                {children}
+                {title && <Typography variant='h4'>{title}</Typography>}
+                <Box>{children}</Box>
             </Stack>
         </Container>
     );
