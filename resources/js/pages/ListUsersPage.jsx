@@ -174,9 +174,7 @@ function ListUsersPage({ data, isLoading, filters, setFilters }) {
         <Page
             title='User List'
             breadcrumbs={[{ to: '/users', label: 'Users' }]}
-            actions={[
-                { label: 'Add user', to: '/users/create', component: Link },
-            ]}
+            actions={[{ label: 'Add user', to: '/users/new', component: Link }]}
         >
             <DataGrid
                 columns={columns}

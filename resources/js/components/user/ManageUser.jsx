@@ -1,14 +1,25 @@
 import { useState } from 'react';
 
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { IconButton, InputAdornment, TextField } from '@mui/material';
+import {
+    FormControl,
+    FormHelperText,
+    IconButton,
+    InputAdornment,
+    InputLabel,
+    MenuItem,
+    Select,
+    TextField,
+} from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2';
 import { DatePicker } from '@mui/x-date-pickers';
 import { useMutation } from '@tanstack/react-query';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
+import { useAuth } from '../../context/AuthContext.jsx';
 import toast from '../../lib/toast.js';
+import { getAllowedRoles } from '../../utils/roles.js';
 import LoadingButton from '../inputs/LoadingButton.jsx';
 
 const initialState = {
@@ -20,6 +31,7 @@ const initialState = {
     phone_number: '',
     date_of_birth: new Date(),
     authentication_method: 'password',
+    role: 'user',
 };
 
 const signupSchema = Yup.object().shape({
@@ -33,6 +45,10 @@ const signupSchema = Yup.object().shape({
     last_name: Yup.string().min(3).required().label('Last Name'),
     phone_number: Yup.string().required().label('Phone Number'),
     date_of_birth: Yup.date().required().label('Date of Birth'),
+    role: Yup.string()
+        .required()
+        .label('Role')
+        .oneOf(['user', 'admin', 'manager']),
 });
 
 function Cell({ children }) {
@@ -44,7 +60,9 @@ function Cell({ children }) {
 }
 
 export default function ManageUser({ initialValues = null, mutationFn }) {
+    const { user } = useAuth();
     const isInEditMode = Boolean(initialValues?.id);
+    const canChangeRole = user.id !== initialValues?.id;
     const [showPassword, setShowPassword] = useState(false);
     const mutation = useMutation({
         mutationFn,
@@ -71,6 +89,43 @@ export default function ManageUser({ initialValues = null, mutationFn }) {
                 value='password'
             />
             <Grid2 container spacing={2}>
+                <Cell>
+                    <TextField
+                        label='First Name'
+                        name='first_name'
+                        autoComplete='given-name'
+                        fullWidth
+                        value={formik.values.first_name}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                            formik.touched.first_name &&
+                            Boolean(formik.errors.first_name)
+                        }
+                        helperText={
+                            formik.touched.first_name &&
+                            formik.errors.first_name
+                        }
+                    />
+                </Cell>
+                <Cell>
+                    <TextField
+                        label='Last Name'
+                        name='last_name'
+                        autoComplete='family-name'
+                        fullWidth
+                        value={formik.values.last_name}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                            formik.touched.last_name &&
+                            Boolean(formik.errors.last_name)
+                        }
+                        helperText={
+                            formik.touched.last_name && formik.errors.last_name
+                        }
+                    />
+                </Cell>
                 <Cell>
                     <TextField
                         label='Username'
@@ -105,7 +160,11 @@ export default function ManageUser({ initialValues = null, mutationFn }) {
                         error={
                             formik.touched.email && Boolean(formik.errors.email)
                         }
-                        helperText={formik.touched.email && formik.errors.email}
+                        helperText={
+                            (formik.touched.email && formik.errors.email) ||
+                            (!isInEditMode &&
+                                'A verification email will be sent if you are signing up')
+                        }
                     />
                 </Cell>
                 <Cell>
@@ -151,43 +210,6 @@ export default function ManageUser({ initialValues = null, mutationFn }) {
                 </Cell>
                 <Cell>
                     <TextField
-                        label='First Name'
-                        name='first_name'
-                        autoComplete='given-name'
-                        fullWidth
-                        value={formik.values.first_name}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={
-                            formik.touched.first_name &&
-                            Boolean(formik.errors.first_name)
-                        }
-                        helperText={
-                            formik.touched.first_name &&
-                            formik.errors.first_name
-                        }
-                    />
-                </Cell>
-                <Cell>
-                    <TextField
-                        label='Last Name'
-                        name='last_name'
-                        autoComplete='family-name'
-                        fullWidth
-                        value={formik.values.last_name}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={
-                            formik.touched.last_name &&
-                            Boolean(formik.errors.last_name)
-                        }
-                        helperText={
-                            formik.touched.last_name && formik.errors.last_name
-                        }
-                    />
-                </Cell>
-                <Cell>
-                    <TextField
                         label='Phone Number'
                         name='phone_number'
                         autoComplete='tel'
@@ -205,6 +227,42 @@ export default function ManageUser({ initialValues = null, mutationFn }) {
                             formik.errors.phone_number
                         }
                     />
+                </Cell>
+                <Cell>
+                    <FormControl fullWidth>
+                        <InputLabel id='role-select'>Role</InputLabel>
+                        <Select
+                            labelId='role-select'
+                            label='Age'
+                            name='role'
+                            value={formik.values.role}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            disabled={!canChangeRole}
+                        >
+                            {canChangeRole ? (
+                                getAllowedRoles(user.role).map(role => (
+                                    <MenuItem key={role} value={role}>
+                                        {role}
+                                    </MenuItem>
+                                ))
+                            ) : (
+                                <MenuItem value={user.role}>
+                                    {user.role}
+                                </MenuItem>
+                            )}
+                        </Select>
+                        {formik.touched.role && formik.errors.role && (
+                            <FormHelperText
+                                error={
+                                    formik.touched.role &&
+                                    Boolean(formik.errors.role)
+                                }
+                            >
+                                {formik.errors.role}
+                            </FormHelperText>
+                        )}
+                    </FormControl>
                 </Cell>
                 <Cell>
                     <DatePicker
