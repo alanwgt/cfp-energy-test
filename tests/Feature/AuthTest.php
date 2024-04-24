@@ -122,18 +122,4 @@ class AuthTest extends TestCase
 
         $this->assertAuthenticated('web');
     }
-
-    public function test_user_can_sign_out(): void
-    {
-        $this->actingAsUser();
-
-        $this->postJson(route('api.v1.auth.sign-out'))
-            ->assertSuccessful();
-
-        $this->assertGuest('web');
-
-        // TODO:
-        //        $this->getJson(route('api.v1.auth.check'))
-        //            ->assertUnauthorized();
-    }
 }

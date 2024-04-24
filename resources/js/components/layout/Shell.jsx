@@ -1,13 +1,12 @@
 import { useState } from 'react';
 
-import { Add, Logout, Person } from '@mui/icons-material';
+import { Logout, Person } from '@mui/icons-material';
 import MenuIcon from '@mui/icons-material/Menu';
 import {
     AppBar,
     Avatar,
     Box,
     Container,
-    Fab,
     IconButton,
     ListItemIcon,
     ListItemText,
@@ -261,17 +260,6 @@ export function Shell({ children }) {
                 </Container>
             </AppBar>
             <Container>{children}</Container>
-            <Fab
-                color='secondary'
-                sx={{
-                    position: 'absolute',
-                    bottom: 16,
-                    right: 16,
-                }}
-                onClick={() => navigate('/users/new')}
-            >
-                <Add />
-            </Fab>
         </Box>
     );
 }

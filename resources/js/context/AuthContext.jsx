@@ -84,8 +84,9 @@ export const AuthProvider = ({ children }) => {
         setIsLoading(true);
         authLogout()
             .then(() => {
-                setIsAuthenticated(false);
                 setUser(null);
+                setIsAuthenticated(null);
+                window.location.reload();
             })
             .finally(() => {
                 setIsLoading(false);

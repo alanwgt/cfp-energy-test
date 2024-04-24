@@ -27,7 +27,7 @@ class AuthService
 
     public function loginUser(User $user): void
     {
-        auth()->login($user);
+        auth('web')->login($user);
     }
 
     public function login(string $identification, ?string $password, ?string $otp): void
@@ -42,6 +42,15 @@ class AuthService
         $loginAttempt->user_agent = request()->userAgent();
         $loginAttempt->succeeded = false;
 
+        /** @var ?User $user */
+        $user = User::query()
+            ->whereIdentification($identification)
+            ->first();
+
+        if ($user) {
+            $loginAttempt->user_id = $user->id;
+        }
+
         if ($password) {
             try {
                 $this->loginWithPassword($identification, $password);
@@ -51,10 +60,7 @@ class AuthService
                 throw $e;
             }
 
-            /** @var User $user */
-            $user = auth()->user();
             $loginAttempt->succeeded = true;
-            $loginAttempt->user_id = $user->id;
             $loginAttempt->save();
 
             return;
@@ -67,7 +73,8 @@ class AuthService
 
     public function logout(): void
     {
-        auth('web')->logout();
+        request()->session()->invalidate();
+        auth()->logout();
     }
 
     private function loginWithPassword(string $identification, string $password): void

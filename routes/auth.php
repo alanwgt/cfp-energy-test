@@ -21,8 +21,8 @@ Route::prefix('/auth')
             ->group(function () {
                 Route::get('/check', [AuthController::class, 'check'])
                     ->name('check');
-
-                Route::post('/sign-out', [AuthController::class, 'signOut'])
-                    ->name('sign-out');
             });
+
+        Route::middleware('auth:web')->post('/sign-out', [AuthController::class, 'signOut'])
+            ->name('sign-out');
     });

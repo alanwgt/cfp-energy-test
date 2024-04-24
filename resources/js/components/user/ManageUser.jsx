@@ -62,7 +62,7 @@ function Cell({ children }) {
 export default function ManageUser({ initialValues = null, mutationFn }) {
     const { user } = useAuth();
     const isInEditMode = Boolean(initialValues?.id);
-    const canChangeRole = user.id !== initialValues?.id;
+    const canChangeRole = user?.id !== initialValues?.id;
     const [showPassword, setShowPassword] = useState(false);
     const mutation = useMutation({
         mutationFn,
@@ -240,15 +240,17 @@ export default function ManageUser({ initialValues = null, mutationFn }) {
                             onBlur={formik.handleBlur}
                             disabled={!canChangeRole}
                         >
-                            {canChangeRole ? (
+                            {canChangeRole && user ? (
                                 getAllowedRoles(user.role).map(role => (
                                     <MenuItem key={role} value={role}>
                                         {role}
                                     </MenuItem>
                                 ))
                             ) : (
-                                <MenuItem value={user.role}>
-                                    {user.role}
+                                <MenuItem
+                                    value={user?.role || initialState.role}
+                                >
+                                    {user?.role || initialState.role}
                                 </MenuItem>
                             )}
                         </Select>
