@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -25,10 +26,11 @@ class LoginAttemptFactory extends Factory
         ];
     }
 
-    public function forUser(int $userId): self
+    public function forUser(User $user): self
     {
         return $this->state([
-            'user_id' => $userId,
+            'user_id' => $user->id,
+            'identification' => $user->username,
         ]);
     }
 }

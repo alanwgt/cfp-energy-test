@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
             ->each(function (User $user) {
                 $user->loginAttempts()->saveMany(
                     \App\Models\LoginAttempt::factory(fake()->numberBetween(0, 25))
-                        ->forUser($user->getKey())
+                        ->forUser($user)
                         ->create()
                 );
             });
