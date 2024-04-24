@@ -19,6 +19,7 @@ class LoginAttemptResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->resource->id,
             'ip_address' => $this->resource->ip_address,
             'user_agent' => $this->resource->user_agent,
             'attempted_at' => $this->resource->attempted_at,
