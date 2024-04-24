@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enum\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -21,5 +22,16 @@ class DatabaseSeeder extends Seeder
                         ->create()
                 );
             });
+
+        User::factory()
+            ->role(Role::ADMIN)
+            ->create([
+                'email' => 'contact@cgp.energy',
+                'first_name' => 'CFP',
+                'last_name' => 'Energy',
+                'username' => 'cfpenergy',
+                'date_of_birth' => '2006-01-01',
+                'phone_number' => '+44 20 7348 3500',
+            ]);
     }
 }

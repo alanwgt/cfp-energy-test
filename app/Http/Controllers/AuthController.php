@@ -35,10 +35,13 @@ class AuthController extends Controller
 
     public function signUp(StoreUserData $request, UserService $userService, AuthService $authService): JsonResponse
     {
-        $user = $userService->upsert($request);
-        $authService->loginUser($user);
+        return \DB::transaction(function () use ($request, $userService, $authService) {
+            $user = $userService->upsert($request);
+            $authService->createAdminInvite($user);
+            $authService->loginUser($user);
 
-        return response()->ok(UserDetailedResource::make($user));
+            return response()->ok(UserDetailedResource::make($user));
+        });
     }
 
     public function signOut(AuthService $authService): Response

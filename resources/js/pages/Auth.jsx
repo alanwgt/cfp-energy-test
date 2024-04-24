@@ -65,28 +65,18 @@ export default function Auth() {
                     <Box sx={{ mt: 3, width: '100%' }}>
                         {showLogin ? <Login /> : <Signup />}
                     </Box>
-                    <Grid container sx={{ mt: 1 }}>
-                        <Grid item xs>
-                            {showLogin && (
-                                <Link href='#' variant='body2'>
-                                    Forgot password?
-                                </Link>
-                            )}
-                        </Grid>
-                        <Grid item>
-                            <Link
-                                component='button'
-                                variant='body2'
-                                onClick={() => {
-                                    setShowLogin(show => !show);
-                                }}
-                            >
-                                {showLogin
-                                    ? "Don't have an account? Sign Up"
-                                    : 'Already have an account? Sign In'}
-                            </Link>
-                        </Grid>
-                    </Grid>
+                    <Link
+                        sx={{ mt: 3 }}
+                        component='button'
+                        variant='body2'
+                        onClick={() => {
+                            setShowLogin(show => !show);
+                        }}
+                    >
+                        {showLogin
+                            ? "Don't have an account? Sign Up"
+                            : 'Already have an account? Sign In'}
+                    </Link>
                 </Box>
             </Grid>
         </Grid>

@@ -1,15 +1,18 @@
 import axios from '../lib/axios.js';
 
-export const loginWithPassword = (identification, password, rememberMe) =>
-    axios.post('auth/sign-in', {
+export function loginWithPassword(identification, password, rememberMe) {
+    return axios.post('auth/sign-in', {
         identification,
         password,
         remember_me: rememberMe,
     });
+}
 
-export const logout = () => axios.post('auth/sign-out');
+export function logout() {
+    return axios.post('auth/sign-out');
+}
 
-export const register = (
+export function register(
     username,
     email,
     password,
@@ -17,8 +20,8 @@ export const register = (
     lastName,
     phoneNumber,
     dateOfBirth
-) =>
-    axios.post('auth/sign-up', {
+) {
+    return axios.post('auth/sign-up', {
         username,
         email,
         password,
@@ -29,5 +32,8 @@ export const register = (
         authentication_method: 'password',
         role: 'user',
     });
+}
 
-export const checkAuth = () => axios.get('auth/check');
+export function checkAuth() {
+    return axios.get('auth/check');
+}

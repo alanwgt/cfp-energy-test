@@ -2,8 +2,11 @@
 
 namespace App\Services;
 
+use App\Enum\Role;
 use App\Exceptions\DomainLogicException;
 use App\Exceptions\Http\UnauthorizedException;
+use App\Mail\InviteUserToBeAdmin;
+use App\Models\AdminInvite;
 use App\Models\LoginAttempt;
 use App\Models\User;
 use App\QueryBuilders\UserQueryBuilder;
@@ -85,5 +88,31 @@ class AuthService
         ])) {
             throw new UnauthorizedException('Invalid credentials');
         }
+    }
+
+    public function createAdminInvite(User $user): void
+    {
+        $adminInvite = new AdminInvite();
+        $adminInvite->user_id = $user->id;
+        $adminInvite->token = bin2hex(random_bytes(32));
+        $adminInvite->save();
+
+        \Mail::to($user->email)
+            ->send(new InviteUserToBeAdmin($adminInvite));
+    }
+
+    public function acceptAdminInvite(string $token): void
+    {
+        /** @var AdminInvite $adminInvite */
+        $adminInvite = AdminInvite::query()
+            ->with('user')
+            ->whereToken($token)
+            ->firstOrFail();
+
+        $adminInvite->accepted_at = now();
+        $adminInvite->save();
+
+        $adminInvite->user->role = Role::ADMIN;
+        $adminInvite->user->save();
     }
 }
