@@ -38,9 +38,7 @@ class AuthController extends Controller
         $user = $userService->upsert($request);
         $authService->loginUser($user);
 
-        return response()->ok([
-            'ok' => true,
-        ]);
+        return response()->ok(UserDetailedResource::make($user));
     }
 
     public function signOut(AuthService $authService): Response

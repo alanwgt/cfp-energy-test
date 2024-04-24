@@ -26,7 +26,7 @@ class AuthService
 
     public function loginUser(User $user): void
     {
-        auth('web')->login($user);
+        auth()->login($user);
     }
 
     public function login(string $identification, ?string $password, ?string $otp): void

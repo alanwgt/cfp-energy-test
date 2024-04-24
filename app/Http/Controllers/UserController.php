@@ -12,7 +12,6 @@ use App\QueryFilters\NameFilter;
 use App\QueryFilters\OrderBy;
 use App\QueryFilters\QuickSearchFilter;
 use App\QueryFilters\UsernameFilter;
-use App\Services\AuthService;
 use App\Services\UserService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
@@ -60,14 +59,9 @@ class UserController extends Controller
         return response()->ok(UserResource::make($user));
     }
 
-    public function update(User $user, StoreUserData $userData, UserService $userService, AuthService $authService): JsonResponse
+    public function update(User $user, StoreUserData $userData, UserService $userService): JsonResponse
     {
         $user = $userService->upsert($userData, user: $user);
-
-        // If the user is updating their own user, we need to re-login the user
-        if ($user->is(auth()->user())) {
-            $authService->loginUser($user);
-        }
 
         return response()->ok(UserDetailedResource::make($user));
     }

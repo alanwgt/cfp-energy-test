@@ -26,6 +26,8 @@ export const register = (
         last_name: lastName,
         phone_number: phoneNumber,
         date_of_birth: dateOfBirth,
+        authentication_method: 'password',
+        role: 'user',
     });
 
 export const checkAuth = () => axios.get('auth/check');

@@ -44,15 +44,11 @@ function Cell({ children }) {
     );
 }
 
-export default function ManageUser({
-    onSuccess = () => {},
-    initialValues = null,
-}) {
+export default function ManageUser({ initialValues = null, mutationFn }) {
     const isInEditMode = Boolean(initialValues?.id);
     const [showPassword, setShowPassword] = useState(false);
     const mutation = useMutation({
-        mutationFn: values =>
-            initialValues?.id ? updateUser(values) : createUser(values),
+        mutationFn,
         mutationKey: ['users', initialValues?.id],
     });
     const formik = useFormik({
@@ -61,9 +57,8 @@ export default function ManageUser({
         onSubmit: (values, { setSubmitting }) => {
             mutation.mutate(values, {
                 onSettled: () => setSubmitting(false),
-                onSuccess: ({ data }) => {
+                onSuccess: () => {
                     toast.success('Success!');
-                    onSuccess(data.data);
                 },
             });
         },

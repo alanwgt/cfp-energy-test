@@ -1,4 +1,4 @@
-import { fetchUser } from '../api/usersApi.js';
+import { fetchUser, updateUser } from '../api/usersApi.js';
 import withRemoteData from '../components/hocs/withRemoteData.jsx';
 import Page from '../components/layout/Page.jsx';
 import ManageUser from '../components/user/ManageUser.jsx';
@@ -16,15 +16,17 @@ function ManageUserPage({ data: user }) {
             ]}
         >
             <ManageUser
+                mutationFn={values =>
+                    updateUser(values).then(() => {
+                        queryClient.invalidateQueries({
+                            queryKey: [...QUERY_KEYS.MANAGE_USER, '' + user.id],
+                        });
+                        queryClient.invalidateQueries({
+                            queryKey: QUERY_KEYS.USERS,
+                        });
+                    })
+                }
                 initialValues={{ ...user }}
-                onSuccess={() => {
-                    queryClient.invalidateQueries({
-                        queryKey: [...QUERY_KEYS.MANAGE_USER, '' + user.id],
-                    });
-                    queryClient.invalidateQueries({
-                        queryKey: QUERY_KEYS.USERS,
-                    });
-                }}
             />
         </Page>
     );

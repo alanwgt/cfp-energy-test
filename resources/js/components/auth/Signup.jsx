@@ -9,15 +9,15 @@ export default function Signup() {
     return (
         <Box sx={{ mt: 1 }}>
             <ManageUser
-                onSuccess={values =>
+                mutationFn={values =>
                     register(
                         values.username,
                         values.email,
                         values.password,
-                        values.firstName,
-                        values.lastName,
-                        values.phoneNumber,
-                        values.dateOfBirth
+                        values.first_name,
+                        values.last_name,
+                        values.phone_number,
+                        values.date_of_birth
                     )
                 }
             />

@@ -115,6 +115,7 @@ function ListUsersPage({ data, isLoading, filters, setFilters }) {
     const handleSortChange = useCallback(sortModel => {
         if (!sortModel.length) {
             if (filters.sort_order) {
+                // eslint-disable-next-line no-unused-vars
                 setFilters(({ sort_order, sort_by, ...otherFilters }) => ({
                     ...otherFilters,
                 }));

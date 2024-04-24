@@ -1,4 +1,4 @@
-import { fetchProfile } from '../api/usersApi.js';
+import { fetchProfile, updateUser } from '../api/usersApi.js';
 import withRemoteData from '../components/hocs/withRemoteData.jsx';
 import Page from '../components/layout/Page.jsx';
 import ManageUser from '../components/user/ManageUser.jsx';
@@ -10,8 +10,10 @@ function UserProfilePage({ data: profile }) {
     return (
         <Page title={profile.username} breadcrumbs={[{ label: 'Profile' }]}>
             <ManageUser
+                mutationFn={values =>
+                    updateUser(values).then(({ data }) => setUser(data.data))
+                }
                 initialValues={{ ...profile }}
-                onSuccess={data => setUser(data)}
             />
         </Page>
     );
