@@ -9,7 +9,7 @@ export default function Signup() {
     return (
         <Box sx={{ mt: 1 }}>
             <ManageUser
-                onSubmit={values =>
+                onSuccess={values =>
                     register(
                         values.username,
                         values.email,

@@ -19,7 +19,7 @@ const initialState = {
     first_name: '',
     last_name: '',
     phone_number: '',
-    date_of_birth: '',
+    date_of_birth: new Date(),
     authentication_method: 'password',
 };
 
@@ -48,11 +48,11 @@ export default function ManageUser({
     onSuccess = () => {},
     initialValues = null,
 }) {
-    const isInEditMode = Boolean(initialValues.id);
+    const isInEditMode = Boolean(initialValues?.id);
     const [showPassword, setShowPassword] = useState(false);
     const mutation = useMutation({
         mutationFn: values =>
-            initialValues.id ? updateUser(values) : createUser(values),
+            initialValues?.id ? updateUser(values) : createUser(values),
         mutationKey: ['users', initialValues?.id],
     });
     const formik = useFormik({
