@@ -1,13 +1,23 @@
-import { Breadcrumbs, Container, Stack } from '@mui/material';
+import { Breadcrumbs, ButtonGroup, Container, Stack } from '@mui/material';
+import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
 
-export default function Page({ title, children, breadcrumbs = [] }) {
+export default function Page({
+    title,
+    children,
+    breadcrumbs = [],
+    actions = [],
+}) {
     const computedBreadcrumbs = [{ to: '/', label: 'Home' }, ...breadcrumbs];
 
     return (
         <Container my={2}>
             <Stack my={2} spacing={2}>
-                {breadcrumbs.length > 0 && (
+                <Stack
+                    direction='row'
+                    justifyContent='space-between'
+                    alignItems='center'
+                >
                     <Breadcrumbs>
                         {computedBreadcrumbs.map(breadcrumb => (
                             <Link
@@ -18,7 +28,16 @@ export default function Page({ title, children, breadcrumbs = [] }) {
                             </Link>
                         ))}
                     </Breadcrumbs>
-                )}
+                    {actions.length > 0 && (
+                        <ButtonGroup>
+                            {actions.map(({ label, ...buttonProps }, index) => (
+                                <Button key={index} {...buttonProps}>
+                                    {label}
+                                </Button>
+                            ))}
+                        </ButtonGroup>
+                    )}
+                </Stack>
                 {children}
             </Stack>
         </Container>

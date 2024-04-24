@@ -112,59 +112,71 @@ function ListUsersPage({ data, isLoading, filters, setFilters }) {
         [confirm, mutation]
     );
 
-    const handleSortChange = useCallback(sortModel => {
-        if (!sortModel.length) {
-            if (filters.sort_order) {
-                // eslint-disable-next-line no-unused-vars
-                setFilters(({ sort_order, sort_by, ...otherFilters }) => ({
-                    ...otherFilters,
-                }));
+    const handleSortChange = useCallback(
+        sortModel => {
+            if (!sortModel.length) {
+                if (filters.sort_order) {
+                    // eslint-disable-next-line no-unused-vars
+                    setFilters(({ sort_order, sort_by, ...otherFilters }) => ({
+                        ...otherFilters,
+                    }));
+                }
+                return;
             }
-            return;
-        }
 
-        const { field, sort } = sortModel[0];
+            const { field, sort } = sortModel[0];
 
-        setFilters(filters => ({
-            ...filters,
-            sort_by: field,
-            sort_order: sort,
-        }));
-    }, []);
+            setFilters(filters => ({
+                ...filters,
+                sort_by: field,
+                sort_order: sort,
+            }));
+        },
+        [filters.sort_order, setFilters]
+    );
 
-    const handleFilterChange = useCallback(filterModel => {
-        const { quickFilterValues: quickFilter, items } = filterModel;
-        const localFilters = { ...filters };
+    const handleFilterChange = useCallback(
+        filterModel => {
+            const { quickFilterValues: quickFilter, items } = filterModel;
+            const localFilters = { ...filters };
 
-        for (const key in localFilters) {
-            if (!items.find(item => item.field === key)) {
-                delete localFilters[key];
+            for (const key in localFilters) {
+                if (!items.find(item => item.field === key)) {
+                    delete localFilters[key];
+                }
             }
-        }
 
-        if (!quickFilter.length) {
-            delete localFilters.quick_filter;
-        } else {
-            localFilters.quick_filter = quickFilter[0];
-        }
+            if (!quickFilter.length) {
+                delete localFilters.quick_filter;
+            } else {
+                localFilters.quick_filter = quickFilter[0];
+            }
 
-        setFilters({
-            ...localFilters,
-            ...items.reduce((acc, item) => {
-                const { field, operator, value } = item;
-                return {
-                    ...acc,
-                    [field]: {
-                        operator,
-                        value,
-                    },
-                };
-            }, {}),
-        });
-    }, []);
+            setFilters({
+                ...localFilters,
+                ...items.reduce((acc, item) => {
+                    const { field, operator, value } = item;
+                    return {
+                        ...acc,
+                        [field]: {
+                            operator,
+                            value,
+                        },
+                    };
+                }, {}),
+            });
+        },
+        [filters, setFilters]
+    );
 
     return (
-        <Page title='Users' breadcrumbs={[{ to: '/users', label: 'Users' }]}>
+        <Page
+            title='Users'
+            breadcrumbs={[{ to: '/users', label: 'Users' }]}
+            actions={[
+                { label: 'Add user', to: '/users/create', component: Link },
+            ]}
+        >
             <DataGrid
                 columns={columns}
                 rows={data.data}
