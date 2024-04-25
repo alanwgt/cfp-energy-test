@@ -1,0 +1,177 @@
+= CFP Energy Technical Test
+Alan Weingartner <hi@alanwgt.com>
+:description: This is a technical test for CFP Energy
+:url-repo: https://github.com/alanwgt/cfp-energy-test
+:toc: preamble
+:imagesdir: assets
+
+This is a technical test for CFP Energy.
+The project consists of a simple user management system divided into two parts: the front-end, built with React, and the back-end, built with Laravel.
+
+The project was designed to be easily run with docker and docker-compose.
+To run the project, you need to have `docker` and `docker-compose` installed on your machine.
+Refer to the section <<_instructions_to_run_the_project>> for more information.
+
+== Features
+
+User CRUD::
+Every user can be created, read, updated and deleted. The user model has the following fields:
+* First name
+* Last name
+* Username (unique)
+* Email (unique)
+* Phone
+* Role (one of xref:app/Enum/Role.php[]])
+* Password
+* Authentication Method (one of xref:app/Enum/AuthenticationMethod.php[]])
+** This was added to simulate a scenario where the user could authenticate with a password or an OTP sent to the email, but it was not finished.
+
+When a user is created, the role is automatically set to `user`, the authentication method is set to `password` and an email is sent to the user with an invitation to become an admin.
+
+Even though the `user` role doesn't have the permission to list users, the button to list users is still visible. This was done to simulate a scenario where the user could see the button but an unauthorized message would be shown when trying to access the page.
+
+The home page consists of a list of login attempts, where the user can see the date and time of the attempt, the user's identification (username or email) that was used and the result of the attempt.
+
+Permissions:: Every user can have one of the following roles:
+* user
+* manager
+* admin
+
+Each role has different permissions, as shown in the table below:
+
+[cols="h, 1, 1, 1",options="header"]
+|===
+| ⬇️ from \ ➡️ to|user|manager|admin
+
+|user|-|-|-
+|manager|create/view/update/delete|create|-
+|admin|create/view/update/delete|create/view/update/delete|create
+|===
+
+
+[#_instructions_to_run_the_project]
+== Instructions to run the project
+
+The project was designed to be easily run with docker and docker-compose. To run the project, you need to have `docker` and `docker-compose` installed on your machine.
+
+To run the project, you need to run the following commands:
+
+[source,shell]
+----
+# Clone the repository
+git clone https://github.com/alanwgt/cfp-energy-test
+# Enter the project directory
+cd cfp-energy-test
+# Execute the script to start the project
+./bin/init-dev
+----
+
+[CAUTION]
+.Never trust the internet
+====
+You should probably check the contents of the script before running it:
+
+[,shell]
+----
+include::bin/init-dev[]
+----
+====
+
+The script automatically seeds the database where an admin user is created with the following credentials:
+
+[horizontal]
+Email:: `contact@cfp.energy`
+Password:: `password`
+
+After running the script, you can access the project at `http://localhost`.
+
+IMPORTANT: hit me at hi@alanwgt.com, so I can provide the `RESEND_API_KEY` that is required for signing up new users.
+
+== Technologies and libraries
+
+=== Front (react)
+
+Packages::
+`axios`::: HTTP client
+`@tanstack/react-query`::: Data fetching, caching and automatic suspense handling
+`formik`::: Form handling
+`yup`::: Form validation
+`react-router-dom`::: Routing
+
+==== Key points
+
+* The project was built with a mobile-first approach;
+* xref:resources/js/components/hocs[HOC] (Higher Order Components) were used extensively to reduce code duplication;
+* xref:resources/js/context/AuthContext.jsx[Contexts] were used to manage the user's authentication state.
+
+=== Back (laravel)
+
+Packages::
+`laravel/sanctum`::: API/SPA authentication
+`resend/resend-laravel`::: Email provider
+`spatie/laravel-data`::: Data transfer objects and validation
+
+==== Key points
+
+* The project was built with a clean architecture approach;
+* Request filters where achieved through xref:app/Data/FilterData.php[array of filters] chained through a xref:app/Http/Controllers/UserController.php[request pipeline];
+* xref:app/Policies/UserPolicy.php[Policies] were used to manage the user's permissions based on xref:app/Enum/Role.php[roles];
+* xref:app/Services/UserService.php[Services] were used to manage the business rules;
+* xref:app/QueryBuilders/UserQueryBuilder.php[Query Builders] were used to manage the database queries;
+* Laravel's response was enriched with xref:app/Providers/ResponseServiceProvider.php[] to provide a consistent response format;
+* Errors were handled through xref:app/Exceptions/Handler.php[] and standardized through; xref:app/Http/Resources/ErrorResource.php[] and xref:app/Support/CFPException.php[].
+
+=== CI
+
+`github actions`:: Every push to the main branch triggers the CI pipeline, where the laravel tests are run, the code is linted and the message commit is checked against https://www.conventionalcommits.org/en/v1.0.0/[conventional commits format,window="_blank",role="external"], enforced by the `commitlint` package.
+
+`husky`::
+pre-commit::: Hooks to run the tests and the linters
+commit-msg::: Hook to enforce the commit message format
+
+linters and static analysis::
+    `eslint`::: javascript static analysis
+    `prettier`::: javascript code formatter
+    `pint`::: php code formatter
+    `phpstan`::: php static analysis
+
+`phpunit`:: for php tests
+
+== Possible problems and solutions
+
+* When recreating the docker containers, I faced a problem where the first login with `contact@cfp.energy` was successful, but it was immediately logged out. I believe this is related to the sanctum token being invalidated when the containers are recreated. I didn't have time to investigate further. Signing in again solves the problem.
+
+== Project screenshots
+
+.Sign-in
+image::img.png[]
+
+.Sign-up
+image::img_7.png[]
+
+.Login attempts
+image::img_2.png[]
+
+.User list
+image::img_3.png[]
+
+.User profile
+image::img_4.png[]
+
+.User view
+image::img_5.png[]
+
+.Email sent with the invitation to become an admin
+image::img_6.png[]
+
+== Conclusion
+
+The project was built with a clean architecture approach, where the business rules are separated from the framework. This approach makes the project more maintainable and testable.
+
+Guard clauses were used extensively to reduce the number of nested if statements, making the code more readable.
+
+The project was built with a focus on the user's experience, where the user receives feedback when an action is performed. Every error message was designed to be informative and user-friendly.
+
+Any feedback is welcome. Hit me at hi@alanwgt.com
+
+Thank you for the opportunity!
