@@ -48,6 +48,14 @@ Each role has different permissions, as shown in the table below:
 |admin|create/view/update/delete|create/view/update/delete|create
 |===
 
+Tests::
+
+Only the back-end has tests. The tests were written with PHPUnit and can be run with the following command:
+
+[source,shell]
+----
+./bin/pa test
+----
 
 [#_instructions_to_run_the_project]
 == Instructions to run the project
