@@ -5,6 +5,8 @@ Alan Weingartner <hi@alanwgt.com>
 :toc: preamble
 :imagesdir: assets
 
+image::https://github.com/alanwgt/cfp-energy-test/actions/workflows/ci.yaml/badge.svg[CI status]
+
 This is a technical test for CFP Energy.
 The project consists of a simple user management system divided into two parts: the front-end, built with React, and the back-end, built with Laravel.
 
